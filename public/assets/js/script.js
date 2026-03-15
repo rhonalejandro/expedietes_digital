@@ -115,13 +115,26 @@ function copyvalue() {
 
 
 // >>-- 04 Sidebar toggle js --<<
-$(document).on('click', '.header-toggle', function () {
-  $("nav").toggleClass("semi-nav");
+$(document).on('click', '.header-toggle', function (e) {
+  e.stopPropagation();
+  if ($(window).width() < 768) {
+    $("nav").toggleClass("mobile-nav-open");
+  } else {
+    $("nav").toggleClass("semi-nav");
+  }
 });
 $(".toggle-semi-nav").on("click", function () {
   $("nav").toggleClass("semi-nav");
 });
 
+// Cerrar sidebar móvil al tocar el overlay (fuera del nav)
+$(document).on('click', function (e) {
+  if ($(window).width() < 768 && $("nav").hasClass("mobile-nav-open")) {
+    if (!$(e.target).closest('nav').length) {
+      $("nav").removeClass("mobile-nav-open");
+    }
+  }
+});
 
 // >>-- 05 List page js --<<
 const $window = $(window);
@@ -136,6 +149,9 @@ $contactListbox.on("click", function () {
 function resize() {
     if ($window.width() >= 768) {
         $nav.addClass('semi-nav');
+        $nav.removeClass('mobile-nav-open');
+    } else {
+        $nav.removeClass('semi-nav');
     }
 }
 $(function () {

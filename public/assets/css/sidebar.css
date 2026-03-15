@@ -153,3 +153,91 @@ nav:not(.semi-nav) .toggle-semi-nav i {
     transform: rotate(180deg);
     transition: transform .25s;
 }
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE — sidebar deslizante con transform
+   Se muestra/oculta con la clase .mobile-nav-open
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+    /* Base: sidebar siempre a ancho completo pero fuera de pantalla */
+    nav {
+        width: var(--sidebar-width) !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.28s ease !important;
+        z-index: 1050 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Abierto: deslizar dentro de pantalla */
+    nav.mobile-nav-open {
+        transform: translateX(0) !important;
+    }
+
+    /* Overlay oscuro al abrir */
+    nav.mobile-nav-open ~ .app-content::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1040;
+        cursor: pointer;
+    }
+
+    /* Ocultar chevron toggle interno */
+    .toggle-semi-nav { display: none !important; }
+
+    /* Sin tooltips en móvil */
+    nav .app-nav .main-nav > li:not(.menu-title) > a::after,
+    nav .app-nav .main-nav > li:not(.menu-title) > a::before {
+        display: none !important;
+    }
+
+    /* ── Contenido del sidebar siempre visible cuando abierto ─ */
+
+    /* Logo rectangular */
+    nav .app-logo .sidebar-logo-rect  { display: block !important; }
+    nav .app-logo .sidebar-logo-round { display: none  !important; }
+
+    /* Nombre y rol del perfil */
+    nav .app-logo .nav-profile .flex-grow-1 { display: block !important; }
+    nav .app-logo .nav-profile { justify-content: flex-start !important; }
+
+    /* Etiquetas de texto (anular font-size:0 del semi-nav desktop) */
+    nav .app-nav .main-nav > li:not(.menu-title) > a {
+        justify-content: flex-start !important;
+        font-size: inherit !important;
+        text-align: left !important;
+    }
+    nav .app-nav .main-nav > li:not(.menu-title) > a > .nav-label {
+        display: inline !important;
+        font-size: inherit !important;
+    }
+    nav .app-nav .main-nav > li:not(.menu-title) > a > i.nav-icon {
+        margin-right: 0.45rem !important;
+        margin-left: 0 !important;
+        width: 1.5rem !important;
+        font-size: 1.2rem !important;
+    }
+
+    /* Títulos de sección */
+    nav .app-nav .main-nav > li.menu-title > span {
+        font-size: inherit !important;
+        border-top: none !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+
+    /* Sub-menús */
+    nav .app-nav .main-nav > li:not(.menu-title) ul {
+        height: auto !important;
+        opacity: 1 !important;
+    }
+
+    /* El app-content no debe desplazarse */
+    .app-content {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+}
