@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ClienteLogHelper;
+use App\Helpers\LogSistemaHelper;
 use App\Models\Paciente;
 use App\Models\Persona;
 use Illuminate\Http\Request;
@@ -85,7 +85,7 @@ class PacienteController extends Controller
             ]);
         });
 
-        ClienteLogHelper::creado($paciente->id, $data);
+        LogSistemaHelper::logPacientes('creado', $paciente->id, actual: $data);
 
         return redirect()->route('pacientes.show', $paciente->id)
             ->with('success', 'Paciente registrado exitosamente.');
@@ -133,7 +133,7 @@ class PacienteController extends Controller
 
         // Registrar log con todos los cambios campo por campo
         $actual = array_merge($data, ['estado' => $estado]);
-        ClienteLogHelper::editado($paciente->id, $anterior, $actual);
+        LogSistemaHelper::logPacientes('editado', $paciente->id, $anterior, $actual);
 
         return redirect()->route('pacientes.show', $paciente->id)
             ->with('success', 'Paciente actualizado exitosamente.');
@@ -151,7 +151,7 @@ class PacienteController extends Controller
             $paciente->delete();
         });
 
-        ClienteLogHelper::eliminado($paciente->id, $nombreCompleto);
+        LogSistemaHelper::logPacientes('eliminado', $paciente->id, extra: $nombreCompleto);
 
         return redirect()->route('pacientes.index')
             ->with('success', 'Paciente eliminado correctamente.');
@@ -197,7 +197,8 @@ class PacienteController extends Controller
 
         $paciente->update(['estado' => !$paciente->estado]);
 
-        ClienteLogHelper::estadoCambiado($paciente->id, $estadoAnterior, $paciente->estado);
+        LogSistemaHelper::logPacientes('estado_cambiado', $paciente->id,
+            ['estado' => $estadoAnterior], ['estado' => $paciente->estado]);
 
         return response()->json([
             'success' => true,

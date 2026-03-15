@@ -1,0 +1,701 @@
+/* ============================================================
+   Confirmación de Citas — confirmacion.css
+   ============================================================ */
+
+/* ── Page Layout ─────────────────────────────────────────── */
+.conf-page {
+    padding: 24px;
+    min-height: calc(100vh - 70px);
+    background: #f7f8fc;
+}
+
+.conf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid #e8ecf0;
+}
+
+.conf-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.conf-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+.conf-count-badge {
+    background: #667eea;
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .78rem;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: center;
+    display: inline-block;
+}
+
+.conf-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 340px;
+    min-width: 200px;
+}
+
+.conf-search-wrap .ti {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    font-size: 1rem;
+}
+
+#conf-search {
+    padding-left: 34px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: .85rem;
+    height: 36px;
+    width: 100%;
+    outline: none;
+    transition: border-color .2s;
+}
+
+#conf-search:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,.12);
+}
+
+/* ── Filtros de estatus ──────────────────────────────────── */
+.conf-filtros {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.conf-filtro-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    color: #718096;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .18s;
+    white-space: nowrap;
+}
+
+.conf-filtro-btn i {
+    font-size: .9rem;
+}
+
+.conf-filtro-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: #f5f3ff;
+}
+
+/* Activo: pendientes */
+.conf-filtro-btn.active[data-filtro="pendientes"] {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+/* Activo: confirmadas */
+.conf-filtro-btn.active[data-filtro="confirmadas"] {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+/* Activo: rechazadas */
+.conf-filtro-btn.active[data-filtro="rechazadas"] {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.conf-filtro-count {
+    background: rgba(0,0,0,.08);
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: .7rem;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.7;
+    display: inline-block;
+}
+
+.conf-filtros-sub {
+    font-size: .72rem;
+    color: #a0aec0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Card Grid ───────────────────────────────────────────── */
+#conf-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.conf-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    border: 1px solid #e8ecf0;
+    border-left: 4px solid #cbd5e0;
+    overflow: hidden;
+    transition: box-shadow .2s, transform .15s;
+}
+
+.conf-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    transform: translateY(-1px);
+}
+
+.conf-card[data-estatus="pendiente"] {
+    border-left-color: #f59e0b;
+}
+
+.conf-card[data-estatus="no_asistio"] {
+    border-left-color: #f97316;
+}
+
+.conf-card-inner {
+    padding: 16px;
+}
+
+/* ── Card Header ─────────────────────────────────────────── */
+.conf-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.conf-patient-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d3748;
+    line-height: 1.3;
+}
+
+.conf-patient-sub {
+    font-size: .75rem;
+    color: #718096;
+    margin-top: 2px;
+}
+
+.conf-lead-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #ebf4ff;
+    color: #2b6cb0;
+    font-size: .68rem;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-top: 4px;
+}
+
+/* ── Estatus Badges ──────────────────────────────────────── */
+.conf-badge-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.conf-badge-confirmada {
+    background: #d1fae5;
+    color: #065f46;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.conf-badge-cancelada {
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.conf-badge-no_asistio {
+    background: #ffedd5;
+    color: #9a3412;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Card Body ───────────────────────────────────────────── */
+.conf-card-body {
+    margin-bottom: 14px;
+}
+
+.conf-info-row {
+    font-size: .8rem;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.conf-info-row i {
+    color: #a0aec0;
+    font-size: .9rem;
+    flex-shrink: 0;
+}
+
+.conf-info-row strong {
+    color: #2d3748;
+}
+
+/* ── Card Actions ────────────────────────────────────────── */
+.conf-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-top: 1px solid #f0f4f8;
+    padding-top: 12px;
+}
+
+.conf-btn-confirmar,
+.conf-btn-rechazar,
+.conf-btn-trasladar,
+.conf-btn-editar {
+    flex: 1;
+    min-width: 80px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 7px;
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.conf-btn-actividad {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 7px;
+    background: #fff;
+    color: #667eea;
+    font-size: .95rem;
+    cursor: pointer;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conf-btn-actividad:hover {
+    background: #f5f3ff;
+    border-color: #667eea;
+}
+
+.conf-btn-confirmar {
+    background: #38a169;
+    color: #fff;
+}
+
+.conf-btn-confirmar:hover {
+    background: #2f855a;
+}
+
+.conf-btn-rechazar {
+    background: #e53e3e;
+    color: #fff;
+}
+
+.conf-btn-rechazar:hover {
+    background: #c53030;
+}
+
+.conf-btn-trasladar {
+    background: #3182ce;
+    color: #fff;
+}
+
+.conf-btn-trasladar:hover {
+    background: #2b6cb0;
+}
+
+.conf-btn-editar {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.conf-btn-editar:hover {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+/* ── Removing animation ──────────────────────────────────── */
+.conf-card.removing {
+    opacity: 0;
+    transform: scale(.96) translateY(-4px);
+    transition: opacity .3s, transform .3s;
+    pointer-events: none;
+}
+
+/* ── Sentinel / Loader ───────────────────────────────────── */
+#conf-sentinel {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0aec0;
+    font-size: .85rem;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.conf-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: conf-spin .7s linear infinite;
+    display: inline-block;
+}
+
+@keyframes conf-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+#conf-empty {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: #a0aec0;
+}
+
+#conf-empty i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 12px;
+    opacity: .4;
+}
+
+#conf-empty p {
+    font-size: .9rem;
+    margin: 0;
+}
+
+/* ── Trasladar Modal ─────────────────────────────────────── */
+#modal-trasladar .modal-header {
+    background: #f7f8fc;
+    border-bottom: 1px solid #e8ecf0;
+    padding: 14px 20px;
+}
+
+#modal-trasladar .modal-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.tr-cal-slots-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+@media (max-width: 576px) {
+    .tr-cal-slots-wrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Reuse cc-cal-wrap styles from citas.module.css */
+.tr-cal-wrap {
+    border: 1px solid #e8ecf0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: .82rem;
+    background: #fff;
+}
+
+.tr-cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f7f8fc;
+    border-bottom: 1px solid #e8ecf0;
+}
+
+.tr-cal-title {
+    font-weight: 600;
+    font-size: .83rem;
+    color: #2d3748;
+}
+
+.tr-cal-nav {
+    width: 26px;
+    height: 26px;
+    border: 1px solid #e8ecf0;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    transition: all .15s;
+}
+
+.tr-cal-nav:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: rgba(102,126,234,.08);
+}
+
+.tr-cal-dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    padding: 6px 8px 2px;
+}
+
+.tr-cal-dow span {
+    text-align: center;
+    font-size: .68rem;
+    font-weight: 600;
+    color: #a0aec0;
+}
+
+.tr-cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: 4px 8px 10px;
+}
+
+.tr-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .75rem;
+    border-radius: 6px;
+    cursor: default;
+    color: #cbd5e0;
+    font-weight: 500;
+}
+
+.tr-cal-day.disponible {
+    color: #2d3748;
+    cursor: pointer;
+    background: #f0fff4;
+}
+
+.tr-cal-day.disponible:hover {
+    background: #c6f6d5;
+}
+
+.tr-cal-day.lleno {
+    color: #e53e3e;
+    background: #fff5f5;
+    cursor: not-allowed;
+}
+
+.tr-cal-day.sin-horario {
+    color: #cbd5e0;
+}
+
+.tr-cal-day.hoy {
+    outline: 2px solid #667eea;
+    outline-offset: -2px;
+}
+
+.tr-cal-day.seleccionado {
+    background: #667eea !important;
+    color: #fff !important;
+}
+
+.tr-cal-day.other-month {
+    visibility: hidden;
+}
+
+.tr-cal-loading {
+    text-align: center;
+    padding: 20px;
+    color: #a0aec0;
+    font-size: .8rem;
+}
+
+.tr-leyenda {
+    display: flex;
+    gap: 10px;
+    padding: 4px 10px 8px;
+    font-size: .68rem;
+    color: #718096;
+    flex-wrap: wrap;
+}
+
+.tr-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.tr-dot-disponible { background: #48bb78; }
+.tr-dot-lleno      { background: #fc8181; }
+.tr-dot-sin        { background: #cbd5e0; }
+
+/* Slots panel */
+.tr-slots-col {
+    border: 1px solid #e8ecf0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.tr-slots-header {
+    padding: 8px 12px;
+    background: #f7f8fc;
+    border-bottom: 1px solid #e8ecf0;
+    font-size: .82rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.tr-slots-fecha {
+    font-size: .72rem;
+    font-weight: 600;
+    color: #667eea;
+    display: block;
+    margin-top: 2px;
+}
+
+.tr-slots-grid {
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.tr-slot {
+    padding: 5px 4px;
+    border: 1px solid #e8ecf0;
+    border-radius: 6px;
+    font-size: .72rem;
+    text-align: center;
+    cursor: pointer;
+    background: #f0fff4;
+    color: #276749;
+    font-weight: 500;
+    transition: all .15s;
+}
+
+.tr-slot:hover {
+    background: #c6f6d5;
+    border-color: #68d391;
+}
+
+.tr-slot.ocupado {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #fed7d7;
+    cursor: not-allowed;
+}
+
+.tr-slot.seleccionado {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+}
+
+.tr-slots-loading {
+    padding: 20px;
+    text-align: center;
+    color: #a0aec0;
+    font-size: .8rem;
+}
+
+/* ── Modal: Actividad de la cita ─────────────────────────────── */
+.conf-act-dialog {
+    max-width: 580px;
+}
+
+.conf-act-body {
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+.conf-act-count-badge {
+    background: #667eea;
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .75rem;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: center;
+    display: inline-block;
+}

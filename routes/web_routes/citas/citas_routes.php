@@ -15,6 +15,10 @@ Route::middleware(['auth'])->prefix('citas')->name('citas.')->group(function () 
     Route::get('/disponibilidad/{id}',    [CitaController::class, 'disponibilidad'])->name('disponibilidad');
     Route::get('/horas-disponibles/{id}', [CitaController::class, 'horasDisponibles'])->name('horas_disponibles');
 
+    // Confirmación de citas
+    Route::get('/confirmacion',       [CitaController::class, 'confirmacion'])->name('confirmacion');
+    Route::get('/confirmacion/lista', [CitaController::class, 'confirmacionLista'])->name('confirmacion.lista');
+
     // CRUD vía AJAX (modal)
     Route::post('/',             [CitaController::class, 'store'])->name('store');
     Route::get('/{id}',          [CitaController::class, 'show'])->name('show');

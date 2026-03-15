@@ -688,6 +688,30 @@ const CitasModule = (function () {
             // Guardamos los datos para el modal editar
             modal._citaData = cita;
 
+            // ── Tab Actividad: carga lazy al hacer click ────────────
+            const tabActBtn = modal.querySelector('#tab-actividad-btn');
+            if (tabActBtn) {
+                // Eliminar listener previo y añadir nuevo para esta cita
+                const nuevoBtn = tabActBtn.cloneNode(true);
+                tabActBtn.parentNode.replaceChild(nuevoBtn, tabActBtn);
+
+                nuevoBtn.addEventListener('shown.bs.tab', function () {
+                    if (typeof LogActividad !== 'undefined') {
+                        LogActividad.init({
+                            uid:      'la-citas-modal',
+                            endpoint: `/log-actividad/citas/${cita.id}`,
+                            csrf:     CONFIG.csrf,
+                        });
+                    }
+                });
+            }
+
+            // Asegurar que al abrir el modal siempre empiece en tab "Detalle"
+            const tabDetalleBtn = modal.querySelector('#tab-detalle-btn');
+            if (tabDetalleBtn) {
+                bootstrap.Tab.getOrCreateInstance(tabDetalleBtn).show();
+            }
+
             bootstrap.Modal.getOrCreateInstance(modal).show();
         })
         .catch(() => _toast('No se pudo cargar la cita.', 'danger'));

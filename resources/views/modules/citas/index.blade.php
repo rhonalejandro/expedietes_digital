@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/select/select2.min.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('assets/modules/citas/css/citas.module.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/components/log-actividad/log-actividad.css') }}?v={{ time() }}">
 @endpush
 
 @section('content')
@@ -47,6 +48,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
     <script src="{{ asset('assets/vendor/select/select2.min.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('assets/components/log-actividad/log-actividad.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('assets/modules/citas/js/citas.module.js') }}?v={{ time() }}"></script>
     <script>
         const SUCURSALES_HORARIO = @json($sucursalHorario);

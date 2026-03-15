@@ -21,7 +21,7 @@ class LogCliente extends Model
 
     protected $casts = [
         'fecha'    => 'datetime',
-        'detalles' => 'array',
+        'detalles' => 'array',  // cast necesario para serializar JSON en PostgreSQL
     ];
 
     public function paciente()

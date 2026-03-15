@@ -172,7 +172,9 @@
 
                     {{-- Tab: Actividades --}}
                     <div class="tab-pane fade" id="tab-actividades" role="tabpanel">
-                        <x-especialistas.actividades-recientes :especialistaId="$especialista->id" />
+                        <div class="p-3">
+                            <x-log-actividad modulo="especialistas" :registro-id="$especialista->id" />
+                        </div>
                     </div>
 
                 </div>

@@ -1,518 +1,308 @@
 @extends('layouts.admin.master')
-
 @section('title', 'Dashboard')
 
 @push('styles')
-    <!-- ApexCharts CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/apexcharts/apexcharts.css') }}">
-    
-    <!-- Custom Dashboard Styles -->
     <style>
-        /* Dashboard Cards con gradientes */
-        .dashboard-card {
+        .dash-card {
             border: none;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+        .kpi-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+        }
+        .kpi-number { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+        .kpi-label  { font-size: .78rem; color: #8a94a6; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+        .kpi-sub    { font-size: .76rem; margin-top: 4px; }
+
+        .welcome-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        
-        .card-icon-box {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-        
-        .bg-primary-solid { background-color: #667eea; }
-        .bg-success-solid { background-color: #11998e; }
-        .bg-warning-solid { background-color: #f5576c; }
-        .bg-info-solid { background-color: #4facfe; }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .chart-container {
-            position: relative;
-            min-height: 300px;
-        }
-        
-        .recent-activity-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s;
-        }
-        
-        .recent-activity-item:hover {
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .welcome-banner {
-            background-color: #667eea;
-            border-radius: 20px;
-            padding: 30px;
-            color: white;
-            margin-bottom: 30px;
+            color: #fff;
+            padding: 24px 28px;
             position: relative;
             overflow: hidden;
         }
-        
-        .welcome-banner::before {
+        .welcome-bar::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
+            right: -40px; top: -40px;
+            width: 200px; height: 200px;
+            background: rgba(255,255,255,.08);
             border-radius: 50%;
+            pointer-events: none;
         }
-        
-        .quick-action-btn {
-            border-radius: 12px;
-            padding: 15px 20px;
-            transition: all 0.3s;
-            border: 2px solid transparent;
+
+        .esp-initials {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: .78rem;
+            background: rgba(102,126,234,.12);
+            color: #667eea;
+            flex-shrink: 0;
         }
-        
-        .quick-action-btn:hover {
-            transform: scale(1.05);
-            border-color: #667eea;
+        .cita-row { padding: 9px 0; border-bottom: 1px solid #f1f3f5; }
+        .cita-row:last-child { border-bottom: none; }
+
+        .badge-estatus-confirmada { background: #d4edda; color: #276749; }
+        .badge-estatus-pendiente  { background: #fff3cd; color: #856404; }
+        .badge-estatus-cancelada  { background: #f8d7da; color: #721c24; }
+
+        .section-title {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #8a94a6;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 14px;
         }
     </style>
 @endpush
 
 @section('content')
-<div class="container-fluid">
-    <!-- Welcome Banner -->
-    <div class="welcome-banner">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h2 class="mb-2">👋 ¡Bienvenido, {{ auth()->user()->nombre ?? 'Administrador' }}!</h2>
-                <p class="mb-0 opacity-75">Panel de control - Expediente Digital</p>
+<div class="container-fluid py-3 px-4">
+
+    {{-- ── Bienvenida ──────────────────────────────────────────────────────── --}}
+    <div class="welcome-bar mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h4 class="mb-1 fw-bold" style="color:#fff;">¡Bienvenido, {{ auth()->user()->nombre ?? 'Administrador' }}!</h4>
+                <p class="mb-0" style="font-size:.88rem;color:rgba(255,255,255,.8);">
+                    {{ now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] YYYY') }}
+                    &nbsp;·&nbsp; Global Feet Panama
+                </p>
             </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <p class="mb-1 opacity-75">Fecha de hoy</p>
-                <h5 class="mb-0">{{ now()->format('l, d \d\e F \d\e\l Y') }}</h5>
-                <a href="{{ route('settings.index') }}" class="btn btn-light btn-sm mt-2">
-                    <i class="ti ti-settings me-1"></i> Configuración
-                </a>
-            </div>
+            <a href="{{ route('citas.index') }}" class="btn btn-light btn-sm fw-semibold">
+                <i class="ti ti-calendar me-1"></i>Ver calendario
+            </a>
         </div>
     </div>
 
-    <!-- Estadísticas Principales -->
-    <div class="row g-4 mb-4">
-        <!-- Pacientes -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card dashboard-card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-1">Total Pacientes</p>
-                            <h3 class="stat-number text-primary mb-0" id="totalPacientes">0</h3>
-                            <p class="text-success mb-0 mt-2">
-                                <i class="ti ti-trending-up"></i>
-                                <span class="ms-1">+12% este mes</span>
-                            </p>
-                        </div>
-                        <div class="card-icon-box bg-primary-solid text-white shadow">
-                            <i class="ti ti-users"></i>
+    {{-- ── KPIs ─────────────────────────────────────────────────────────────── --}}
+    <div class="row g-3 mb-4">
+
+        {{-- Pacientes --}}
+        <div class="col-6 col-xl-3">
+            <div class="card dash-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:rgba(102,126,234,.12);color:#667eea;">
+                        <i class="ti ti-users"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-label">Pacientes</div>
+                        <div class="kpi-number text-primary">{{ number_format($totalPacientes) }}</div>
+                        <div class="kpi-sub text-success">
+                            <i class="ti ti-user-plus" style="font-size:.7rem"></i>
+                            {{ $nuevosPacientesMes }} nuevos este mes
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Doctores -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card dashboard-card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-1">Doctores Activos</p>
-                            <h3 class="stat-number text-success mb-0" id="totalDoctores">0</h3>
-                            <p class="text-success mb-0 mt-2">
-                                <span class="ms-1">Todos operativos</span>
-                            </p>
-                        </div>
-                        <div class="card-icon-box bg-success-solid text-white shadow">
-                            <i class="ti ti-user-md"></i>
+        {{-- Especialistas --}}
+        <div class="col-6 col-xl-3">
+            <div class="card dash-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:rgba(17,153,142,.12);color:#11998e;">
+                        <i class="ti ti-stethoscope"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-label">Especialistas</div>
+                        <div class="kpi-number text-success">{{ $totalEspecialistas }}</div>
+                        <div class="kpi-sub text-muted">Todos operativos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Citas hoy --}}
+        <div class="col-6 col-xl-3">
+            <div class="card dash-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:rgba(245,87,108,.12);color:#f5576c;">
+                        <i class="ti ti-calendar-event"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-label">Citas hoy</div>
+                        <div class="kpi-number" style="color:#f5576c;">{{ $citasHoy }}</div>
+                        <div class="kpi-sub text-muted">
+                            <span class="text-success">{{ $citasHoyConfirmadas }} confirmadas</span>
+                            &nbsp;·&nbsp;
+                            <span class="text-warning">{{ $citasHoyPendientes }} pendientes</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Citas Hoy -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card dashboard-card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-1">Citas Hoy</p>
-                            <h3 class="stat-number text-warning mb-0" id="citasHoy">0</h3>
-                            <p class="text-warning mb-0 mt-2">
-                                <i class="ti ti-clock"></i>
-                                <span class="ms-1">3 pendientes</span>
-                            </p>
-                        </div>
-                        <div class="card-icon-box bg-warning-solid text-white shadow">
-                            <i class="ti ti-calendar"></i>
+        {{-- Citas del mes --}}
+        <div class="col-6 col-xl-3">
+            <div class="card dash-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="kpi-icon" style="background:rgba(79,172,254,.12);color:#4facfe;">
+                        <i class="ti ti-calendar-stats"></i>
+                    </div>
+                    <div>
+                        <div class="kpi-label">Citas este mes</div>
+                        <div class="kpi-number" style="color:#4facfe;">{{ number_format($citasMes) }}</div>
+                        <div class="kpi-sub text-muted">
+                            {{ $casosActivos }} casos activos
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Casos Activos -->
-        <div class="col-md-6 col-xl-3">
-            <div class="card dashboard-card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-1">Casos Activos</p>
-                            <h3 class="stat-number text-info mb-0" id="casosActivos">0</h3>
-                            <p class="text-info mb-0 mt-2">
-                                <i class="ti ti-folder-open"></i>
-                                <span class="ms-1">5 nuevos esta semana</span>
-                            </p>
-                        </div>
-                        <div class="card-icon-box bg-info-solid text-white shadow">
-                            <i class="ti ti-folder"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Gráficos y Actividad Reciente -->
-    <div class="row g-4 mb-4">
-        <!-- Gráfico de Citas -->
+    {{-- ── Gráficos ──────────────────────────────────────────────────────────── --}}
+    <div class="row g-3 mb-4">
+
+        {{-- Citas por día esta semana --}}
         <div class="col-lg-8">
-            <div class="card dashboard-card">
-                <div class="card-header bg-transparent border-0 pb-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="ti ti-chart-bar me-2"></i>
-                            Citas por Semana
-                        </h5>
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option>Esta semana</option>
-                            <option>Semana pasada</option>
-                            <option>Este mes</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="citasChart" class="chart-container"></div>
-                </div>
+            <div class="card dash-card p-3 h-100">
+                <div class="section-title">Citas esta semana <span class="text-primary fw-normal normal-case" style="text-transform:none;letter-spacing:0">({{ array_sum($citasSemana) }} en total)</span></div>
+                <div id="chart-semana"></div>
             </div>
         </div>
 
-        <!-- Actividad Reciente -->
+        {{-- Distribución por estatus --}}
         <div class="col-lg-4">
-            <div class="card dashboard-card h-100">
-                <div class="card-header bg-transparent border-0 pb-0">
-                    <h5 class="mb-0">
-                        <i class="ti ti-activity me-2"></i>
-                        Actividad Reciente
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-primary bg-opacity-10 text-primary">
-                            <i class="ti ti-user-plus"></i>
+            <div class="card dash-card p-3 h-100">
+                <div class="section-title">Estatus — este mes</div>
+                <div id="chart-estatus"></div>
+                <div class="mt-3 d-flex flex-column gap-2">
+                    @php
+                        $colors = ['confirmada'=>'#38a169','pendiente'=>'#94a3b8','cancelada'=>'#e53e3e','atendida'=>'#4a5568','no_asistio'=>'#dd6b20'];
+                        $labels = ['confirmada'=>'Confirmada','pendiente'=>'Pendiente','cancelada'=>'Cancelada','atendida'=>'Atendida','no_asistio'=>'No asistió'];
+                    @endphp
+                    @foreach($distribucionEstatus as $estatus => $total)
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <span style="width:10px;height:10px;border-radius:3px;background:{{ $colors[$estatus] ?? '#aaa' }};display:inline-block;"></span>
+                            <span style="font-size:.78rem;color:#4a5568;">{{ $labels[$estatus] ?? $estatus }}</span>
                         </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Nuevo paciente registrado</p>
-                            <small class="text-muted">Hace 5 minutos</small>
-                        </div>
+                        <span style="font-size:.78rem;font-weight:600;color:#2d3748;">{{ number_format($total) }}</span>
                     </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-success bg-opacity-10 text-success">
-                            <i class="ti ti-calendar-check"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Cita completada</p>
-                            <small class="text-muted">Hace 15 minutos</small>
-                        </div>
-                    </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-warning bg-opacity-10 text-warning">
-                            <i class="ti ti-file-text"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Expediente actualizado</p>
-                            <small class="text-muted">Hace 1 hora</small>
-                        </div>
-                    </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-info bg-opacity-10 text-info">
-                            <i class="ti ti-message"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Nueva consulta creada</p>
-                            <small class="text-muted">Hace 2 horas</small>
-                        </div>
-                    </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-danger bg-opacity-10 text-danger">
-                            <i class="ti ti-clock-exclamation"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Cita programada</p>
-                            <small class="text-muted">Hace 3 horas</small>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Acciones Rápidas -->
-    <div class="row g-4 mb-4">
-        <div class="col-12">
-            <div class="card dashboard-card">
-                <div class="card-header bg-transparent border-0 pb-0">
-                    <h5 class="mb-0">
-                        <i class="ti ti-lightning me-2"></i>
-                        Acciones Rápidas
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-6 col-md-3">
-                            <a href="#" class="quick-action-btn btn btn-light-primary w-100 text-start d-flex align-items-center gap-3">
-                                <i class="ti ti-user-plus f-s-24"></i>
-                                <div>
-                                    <span class="d-block fw-medium">Nuevo Paciente</span>
-                                    <small class="text-muted">Registrar</small>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <a href="#" class="quick-action-btn btn btn-light-success w-100 text-start d-flex align-items-center gap-3">
-                                <i class="ti ti-calendar-plus f-s-24"></i>
-                                <div>
-                                    <span class="d-block fw-medium">Nueva Cita</span>
-                                    <small class="text-muted">Agendar</small>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <a href="#" class="quick-action-btn btn btn-light-warning w-100 text-start d-flex align-items-center gap-3">
-                                <i class="ti ti-file-plus f-s-24"></i>
-                                <div>
-                                    <span class="d-block fw-medium">Nuevo Caso</span>
-                                    <small class="text-muted">Crear</small>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <a href="#" class="quick-action-btn btn btn-light-info w-100 text-start d-flex align-items-center gap-3">
-                                <i class="ti ti-file-text f-s-24"></i>
-                                <div>
-                                    <span class="d-block fw-medium">Expediente</span>
-                                    <small class="text-muted">Consultar</small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{-- ── Próximas citas + Top especialistas ───────────────────────────────── --}}
+    <div class="row g-3">
 
-    <!-- Doctores y Pacientes -->
-    <div class="row g-4">
-        <!-- Top Doctores -->
-        <div class="col-lg-6">
-            <div class="card dashboard-card h-100">
-                <div class="card-header bg-transparent border-0 pb-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="ti ti-star me-2"></i>
-                            Doctores Destacados
-                        </h5>
-                        <a href="#" class="btn btn-sm btn-primary">Ver todos</a>
-                    </div>
+        {{-- Próximas citas --}}
+        <div class="col-lg-7">
+            <div class="card dash-card p-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="section-title mb-0">Próximas citas</div>
+                    <a href="{{ route('citas.index') }}" class="btn btn-sm btn-outline-primary" style="font-size:.75rem;padding:3px 10px;">
+                        Ver todas <i class="ti ti-arrow-right ms-1"></i>
+                    </a>
                 </div>
-                <div class="card-body">
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <img src="{{ asset('assets/images/avatar/1.png') }}" alt="Doctor" class="rounded-circle" width="50">
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Dr. María González</p>
-                            <small class="text-muted">Cardiología • 25 citas esta semana</small>
-                        </div>
-                        <span class="badge bg-success">Activo</span>
+                @forelse($proximasCitas as $cita)
+                @php
+                    $nombrePac = $cita->paciente
+                        ? $cita->paciente->persona->nombre . ' ' . $cita->paciente->persona->apellido
+                        : ($cita->nombre_lead ?? 'Lead');
+                    $esFecha = $cita->fecha->isToday() ? 'Hoy' : $cita->fecha->format('d/m');
+                @endphp
+                <div class="cita-row d-flex align-items-center gap-3">
+                    <div style="min-width:42px;text-align:center;">
+                        <div style="font-size:.7rem;color:#8a94a6;font-weight:600;">{{ $esFecha }}</div>
+                        <div style="font-size:.88rem;font-weight:700;color:#2d3748;">{{ substr($cita->hora_inicio,0,5) }}</div>
                     </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <img src="{{ asset('assets/images/avatar/2.png') }}" alt="Doctor" class="rounded-circle" width="50">
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Dr. Carlos Rodríguez</p>
-                            <small class="text-muted">Pediatría • 18 citas esta semana</small>
-                        </div>
-                        <span class="badge bg-success">Activo</span>
+                    <div class="flex-grow-1" style="min-width:0;">
+                        <div style="font-size:.82rem;font-weight:600;color:#2d3748;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $nombrePac }}</div>
+                        <div style="font-size:.72rem;color:#8a94a6;">{{ $cita->especialista->nombre_completo }}</div>
                     </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <img src="{{ asset('assets/images/avatar/3.png') }}" alt="Doctor" class="rounded-circle" width="50">
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Dra. Ana Martínez</p>
-                            <small class="text-muted">Dermatología • 15 citas esta semana</small>
-                        </div>
-                        <span class="badge bg-warning">Ocupado</span>
-                    </div>
+                    <span class="badge badge-estatus-{{ $cita->estatus }}" style="font-size:.68rem;border-radius:6px;padding:3px 8px;">
+                        {{ ucfirst($cita->estatus) }}
+                    </span>
                 </div>
+                @empty
+                <p class="text-muted text-center py-3 mb-0" style="font-size:.82rem;">No hay citas próximas programadas.</p>
+                @endforelse
             </div>
         </div>
 
-        <!-- Próximas Citas -->
-        <div class="col-lg-6">
-            <div class="card dashboard-card h-100">
-                <div class="card-header bg-transparent border-0 pb-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="ti ti-clock me-2"></i>
-                            Próximas Citas
-                        </h5>
-                        <a href="#" class="btn btn-sm btn-primary">Ver calendario</a>
+        {{-- Top especialistas esta semana --}}
+        <div class="col-lg-5">
+            <div class="card dash-card p-3">
+                <div class="section-title mb-3">Top especialistas — esta semana</div>
+                @foreach($topEspecialistas as $item)
+                @php
+                    $nombre = $item->especialista->nombre_completo;
+                    $iniciales = collect(explode(' ', $nombre))->map(fn($w) => strtoupper($w[0] ?? ''))->take(2)->implode('');
+                    $maxCitas = $topEspecialistas->first()->total;
+                    $pct = $maxCitas > 0 ? round(($item->total / $maxCitas) * 100) : 0;
+                @endphp
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="esp-initials">{{ $iniciales }}</div>
+                    <div class="flex-grow-1" style="min-width:0;">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span style="font-size:.8rem;font-weight:600;color:#2d3748;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;">{{ $nombre }}</span>
+                            <span style="font-size:.75rem;font-weight:700;color:#667eea;">{{ $item->total }}</span>
+                        </div>
+                        <div style="background:#f1f3f5;border-radius:4px;height:5px;">
+                            <div style="background:#667eea;border-radius:4px;height:5px;width:{{ $pct }}%;"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-primary bg-opacity-10 text-primary">
-                            <i class="ti ti-clock-hour-3"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Juan Pérez - Consulta General</p>
-                            <small class="text-muted">Hoy, 10:00 AM • Dr. González</small>
-                        </div>
-                        <span class="badge bg-primary">Confirmada</span>
-                    </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-success bg-opacity-10 text-success">
-                            <i class="ti ti-clock-hour-4"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">María López - Seguimiento</p>
-                            <small class="text-muted">Hoy, 11:30 AM • Dr. Rodríguez</small>
-                        </div>
-                        <span class="badge bg-success">En espera</span>
-                    </div>
-                    
-                    <div class="recent-activity-item d-flex align-items-center gap-3">
-                        <div class="activity-icon bg-warning bg-opacity-10 text-warning">
-                            <i class="ti ti-clock-hour-5"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 fw-medium">Pedro Sánchez - Primera vez</p>
-                            <small class="text-muted">Hoy, 02:00 PM • Dra. Martínez</small>
-                        </div>
-                        <span class="badge bg-warning">Pendiente</span>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
-    <!-- ApexCharts -->
-    <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
-    
-    <script>
-        // Gráfico de Citas por Semana
-        var citasChartOptions = {
-            series: [{
-                name: 'Citas',
-                data: [12, 18, 15, 22, 28, 35, 40]
-            }],
-            chart: {
-                height: 300,
-                type: 'area',
-                toolbar: { show: false },
-                fontFamily: 'Rubik, sans-serif'
-            },
-            colors: ['#667eea'],
-            dataLabels: { enabled: false },
-            stroke: { curve: 'smooth', width: 3 },
-            fill: {
-                type: 'solid',
-                opacity: 0.15
-            },
-            xaxis: {
-                categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                axisBorder: { show: false },
-                axisTicks: { show: false }
-            },
-            yaxis: { show: true },
-            grid: {
-                borderColor: '#f0f0f0',
-                strokeDashArray: 4,
-            },
-            tooltip: { theme: 'light' },
-            markers: {
-                size: 6,
-                colors: ['#667eea'],
-                strokeColors: '#fff',
-                strokeWidth: 2,
-            }
-        };
+<script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+<script>
+// ── Gráfico citas por día de la semana ──────────────────────────────────
+new ApexCharts(document.querySelector('#chart-semana'), {
+    series: [{ name: 'Citas', data: @json($citasSemana) }],
+    chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'Rubik, sans-serif' },
+    colors: ['#667eea'],
+    plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
+    dataLabels: { enabled: false },
+    xaxis: {
+        categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+        axisBorder: { show: false }, axisTicks: { show: false },
+        labels: { style: { fontSize: '12px', colors: '#8a94a6' } }
+    },
+    yaxis: { labels: { style: { colors: '#8a94a6', fontSize: '11px' } } },
+    grid: { borderColor: '#f1f3f5', strokeDashArray: 4 },
+    tooltip: { theme: 'light' },
+}).render();
 
-        var citasChart = new ApexCharts(document.querySelector("#citasChart"), citasChartOptions);
-        citasChart.render();
-
-        // Animación de números (simulados - luego se cargarán de BD)
-        function animateValue(element, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                element.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // Animar estadísticas (valores de ejemplo)
-        document.addEventListener('DOMContentLoaded', function() {
-            animateValue(document.getElementById("totalPacientes"), 0, 1250, 2000);
-            animateValue(document.getElementById("totalDoctores"), 0, 24, 2000);
-            animateValue(document.getElementById("citasHoy"), 0, 18, 2000);
-            animateValue(document.getElementById("casosActivos"), 0, 86, 2000);
-        });
-    </script>
+// ── Gráfico distribución de estatus ─────────────────────────────────────
+@php
+    $estatusLabels = $distribucionEstatus->keys()->map(fn($k) => ['confirmada'=>'Confirmada','pendiente'=>'Pendiente','cancelada'=>'Cancelada','atendida'=>'Atendida','no_asistio'=>'No asistió'][$k] ?? $k)->values();
+    $estatusColors = $distribucionEstatus->keys()->map(fn($k) => ['confirmada'=>'#38a169','pendiente'=>'#94a3b8','cancelada'=>'#e53e3e','atendida'=>'#4a5568','no_asistio'=>'#dd6b20'][$k] ?? '#aaa')->values();
+@endphp
+new ApexCharts(document.querySelector('#chart-estatus'), {
+    series: @json($distribucionEstatus->values()),
+    chart: { type: 'donut', height: 180, fontFamily: 'Rubik, sans-serif' },
+    labels: @json($estatusLabels),
+    colors: @json($estatusColors),
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    plotOptions: { pie: { donut: { size: '65%' } } },
+    tooltip: { theme: 'light' },
+}).render();
+</script>
 @endpush

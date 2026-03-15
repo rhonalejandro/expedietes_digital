@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\CitaLogHelper;
+use App\Helpers\LogSistemaHelper;
 use App\Models\Cita;
 use App\Models\Especialista;
 use App\Models\HorarioEspecialista;
@@ -102,7 +102,7 @@ class CitaController extends Controller
 
         $cita = Cita::create($data);
 
-        CitaLogHelper::creada($cita->id, $data);
+        LogSistemaHelper::logCitas('creada', $cita->id, actual: $data);
 
         return response()->json([
             'success' => true,
@@ -133,7 +133,7 @@ class CitaController extends Controller
         $this->checkSolapamiento($data, $id);
         $cita->update($data);
 
-        CitaLogHelper::editada($cita->id, $anterior, $data);
+        LogSistemaHelper::logCitas('editada', $cita->id, $anterior, $data);
 
         return response()->json([
             'success' => true,
@@ -153,7 +153,8 @@ class CitaController extends Controller
 
         $cita->update(['estatus' => $request->estatus]);
 
-        CitaLogHelper::estatusCambiado($cita->id, $anterior, $request->estatus);
+        LogSistemaHelper::logCitas('estatus_cambiado', $cita->id,
+            ['estatus' => $anterior], ['estatus' => $request->estatus]);
 
         return response()->json([
             'success' => true,
@@ -169,7 +170,7 @@ class CitaController extends Controller
         $cita = Cita::with(['especialista.persona', 'paciente.persona'])->findOrFail($id);
         $descripcion = $cita->nombre_paciente . ' — ' . $cita->fecha->format('d/m/Y') . ' ' . $cita->hora_inicio;
 
-        CitaLogHelper::eliminada($cita->id, $descripcion);
+        LogSistemaHelper::logCitas('eliminada', $cita->id, extra: $descripcion);
         $cita->delete();
 
         return response()->json(['success' => true, 'mensaje' => 'Cita eliminada.']);
@@ -282,6 +283,61 @@ class CitaController extends Controller
         }, $slots);
 
         return response()->json($resultado);
+    }
+
+    // ── Confirmación de citas ─────────────────────────────────────────────────
+
+    public function confirmacion(Request $request)
+    {
+        $especialistas = Especialista::with('persona')->activos()->get();
+        $sucursales    = Sucursal::where('estado', true)->get();
+        $servicios     = Servicio::where('estado', true)->get();
+
+        return view('modules.citas.confirmacion', compact('especialistas', 'sucursales', 'servicios'));
+    }
+
+    public function confirmacionLista(Request $request): JsonResponse
+    {
+        $busqueda = trim($request->get('q', ''));
+        $filtro   = $request->get('filtro', 'pendientes'); // pendientes | confirmadas | rechazadas
+
+        // Mapeo de filtro → estatus
+        $estatusPorFiltro = [
+            'pendientes'  => ['pendiente'],
+            'confirmadas' => ['confirmada'],
+            'rechazadas'  => ['cancelada', 'no_asistio'],
+        ];
+        $estatus = $estatusPorFiltro[$filtro] ?? $estatusPorFiltro['pendientes'];
+
+        $query = Cita::with(['especialista.persona', 'paciente.persona', 'sucursal', 'servicio'])
+            ->whereIn('estatus', $estatus)
+            ->where('fecha', '>=', now()->toDateString())   // solo vigentes (hoy en adelante)
+            ->orderBy('fecha', 'asc')
+            ->orderBy('hora_inicio', 'asc');
+
+        if ($busqueda !== '') {
+            $query->where(function ($q) use ($busqueda) {
+                $q->whereHas('paciente.persona', fn($s) =>
+                    $s->where('nombre', 'ilike', "%{$busqueda}%")
+                      ->orWhere('apellido', 'ilike', "%{$busqueda}%")
+                      ->orWhere('contacto', 'ilike', "%{$busqueda}%")
+                      ->orWhere('email', 'ilike', "%{$busqueda}%")
+                )
+                ->orWhere('nombre_lead', 'ilike', "%{$busqueda}%")
+                ->orWhere('telefono_lead', 'ilike', "%{$busqueda}%");
+            });
+        }
+
+        $paginator = $query->paginate(15);
+
+        return response()->json([
+            'data'          => $paginator->items(),
+            'next_page_url' => $paginator->nextPageUrl(),
+            'current_page'  => $paginator->currentPage(),
+            'last_page'     => $paginator->lastPage(),
+            'total'         => $paginator->total(),
+            'filtro'        => $filtro,
+        ]);
     }
 
     // ── Validación de solapamiento ────────────────────────────────────────────

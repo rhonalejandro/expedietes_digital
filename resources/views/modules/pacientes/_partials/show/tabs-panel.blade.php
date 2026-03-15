@@ -43,7 +43,9 @@
 
         {{-- Tab 3: Actividades Recientes --}}
         <div class="tab-pane fade" id="tab-actividades" role="tabpanel">
-            <x-pacientes.actividades-recientes :clienteId="$paciente->id" />
+            <div class="p-3">
+                <x-log-actividad modulo="pacientes" :registro-id="$paciente->id" />
+            </div>
         </div>
 
     </div>

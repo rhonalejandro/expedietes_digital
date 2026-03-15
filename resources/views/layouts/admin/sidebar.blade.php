@@ -87,10 +87,17 @@
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('citas.*') ? 'active' : '' }}">
+            <li class="{{ request()->routeIs('citas.index') ? 'active' : '' }}">
                 <a href="{{ route('citas.index') }}" title="Citas">
                     <i class="ti ti-calendar-event nav-icon"></i>
                     <span class="nav-label">Citas</span>
+                </a>
+            </li>
+
+            <li class="{{ request()->routeIs('citas.confirmacion*') ? 'active' : '' }}">
+                <a href="{{ route('citas.confirmacion') }}" title="Confirmación de Citas">
+                    <i class="ti ti-circle-check nav-icon"></i>
+                    <span class="nav-label">Confirmaciones</span>
                 </a>
             </li>
 

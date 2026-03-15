@@ -23,6 +23,9 @@ Route::middleware(['web'])->group(function () {
     // Rutas de servicios
     require base_path('routes/web_routes/servicios/servicios_routes.php');
 
+    // Log de actividad — endpoint unificado para el componente <x-log-actividad>
+    require base_path('routes/web_routes/log_actividad_routes.php');
+
     // Developer Panel (TOTP-protected, fuera del middleware auth)
     require base_path('routes/web_routes/developer/developer_routes.php');
 

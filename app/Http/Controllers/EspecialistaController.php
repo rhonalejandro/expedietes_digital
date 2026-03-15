@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\EspecialistaLogHelper;
+use App\Helpers\LogSistemaHelper;
 use App\Models\Especialista;
 use App\Models\Persona;
 use Illuminate\Http\Request;
@@ -92,7 +92,7 @@ class EspecialistaController extends Controller
             ]);
         });
 
-        EspecialistaLogHelper::creado($especialista->id, $data);
+        LogSistemaHelper::logEspecialistas('creado', $especialista->id, actual: $data);
 
         return redirect()->route('especialistas.show', $especialista->id)
             ->with('success', 'Especialista registrado exitosamente.');
@@ -166,7 +166,7 @@ class EspecialistaController extends Controller
             'email'         => $data['email'] ?? null,
             'estado'        => $estado,
         ];
-        EspecialistaLogHelper::editado($especialista->id, $anterior, $actual);
+        LogSistemaHelper::logEspecialistas('editado', $especialista->id, $anterior, $actual);
 
         return redirect()->route('especialistas.show', $especialista->id)
             ->with('success', 'Especialista actualizado exitosamente.');
@@ -188,7 +188,7 @@ class EspecialistaController extends Controller
             $especialista->delete();
         });
 
-        EspecialistaLogHelper::eliminado($especialista->id, $nombreCompleto);
+        LogSistemaHelper::logEspecialistas('eliminado', $especialista->id, extra: $nombreCompleto);
 
         return redirect()->route('especialistas.index')
             ->with('success', 'Especialista eliminado correctamente.');
@@ -203,7 +203,8 @@ class EspecialistaController extends Controller
 
         $especialista->update(['estado' => !$especialista->estado]);
 
-        EspecialistaLogHelper::estadoCambiado($especialista->id, $estadoAnterior, $especialista->estado);
+        LogSistemaHelper::logEspecialistas('estado_cambiado', $especialista->id,
+            ['estado' => $estadoAnterior], ['estado' => $especialista->estado]);
 
         return response()->json([
             'success' => true,
