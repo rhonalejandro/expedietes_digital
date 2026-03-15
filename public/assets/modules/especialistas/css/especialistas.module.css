@@ -1,0 +1,311 @@
+/* ============================================================
+   Módulo Especialistas — especialistas.module.css
+   Misma paleta y estructura visual que pacientes.module.css
+   Sin gradientes.
+   ============================================================ */
+
+:root {
+    --esp-primary:       #667eea;
+    --esp-primary-alpha: rgba(102, 126, 234, 0.12);
+    --esp-border:        #e8ecf0;
+    --esp-shadow:        0 1px 4px rgba(0, 0, 0, 0.06);
+    --esp-label-color:   #8a94a6;
+    --esp-value-color:   #2d3748;
+    --esp-row-hover:     #f8fafc;
+}
+
+/* ── Cards compartidas ───────────────────────────────────── */
+.esp-stat-card,
+.esp-toolbar,
+.esp-table-card,
+.esp-detail-card,
+.esp-card {
+    border: 1px solid var(--esp-border) !important;
+    box-shadow: var(--esp-shadow);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* ── Stats KPI ───────────────────────────────────────────── */
+.esp-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--esp-primary-alpha);
+    color: var(--esp-primary);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.esp-stat-icon--success {
+    background: rgba(25, 135, 84, 0.10);
+    color: #198754;
+}
+
+.esp-stat-label {
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--esp-label-color);
+    font-weight: 500;
+}
+
+.esp-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--esp-value-color);
+    line-height: 1.2;
+}
+
+/* ── Tabla ───────────────────────────────────────────────── */
+.esp-table thead th {
+    background: #fafbfc;
+    border-bottom: 1px solid var(--esp-border);
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--esp-label-color);
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+}
+
+.esp-table tbody tr {
+    transition: background 0.12s ease;
+}
+
+.esp-table tbody tr:hover {
+    background: var(--esp-row-hover);
+}
+
+.esp-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-color: #f0f3f6;
+    color: var(--esp-value-color);
+    font-size: var(--ki-font-size-sm, 12px);
+}
+
+/* ── Avatar con iniciales ────────────────────────────────── */
+.esp-avatar-sm {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--esp-primary-alpha);
+    color: var(--esp-primary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    user-select: none;
+}
+
+.esp-avatar-lg {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--esp-primary-alpha);
+    color: var(--esp-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    user-select: none;
+}
+
+/* ── Tratamiento badge ───────────────────────────────────── */
+.esp-trato {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--esp-primary);
+    background: var(--esp-primary-alpha);
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 4px;
+}
+
+/* ── Botones de acción en tabla ──────────────────────────── */
+.esp-action-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    background: transparent;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    text-decoration: none;
+}
+
+.esp-action-btn:hover {
+    color: var(--esp-primary);
+    border-color: var(--esp-primary);
+    background: var(--esp-primary-alpha);
+}
+
+.esp-action-btn--delete:hover {
+    color: #dc3545;
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.08);
+}
+
+/* ── Labels y valores ────────────────────────────────────── */
+.esp-label {
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--esp-label-color);
+    font-weight: 500;
+}
+
+.esp-value {
+    font-size: var(--ki-font-size-md, 14px);
+    color: var(--esp-value-color);
+    font-weight: 400;
+}
+
+.esp-section-title {
+    font-size: var(--ki-font-size-lg, 15px);
+    font-weight: 600;
+    color: var(--esp-value-color);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--esp-border);
+    margin-bottom: 0;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.esp-empty-state {
+    color: #8a94a6;
+    font-size: var(--ki-font-size-sm, 12px);
+}
+
+.esp-table-card .pagination {
+    margin-bottom: 0;
+}
+
+/* ── SHOW — Perfil lateral ───────────────────────────────── */
+.esp-perfil-campo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f4f5f7;
+}
+
+.esp-perfil-campo:last-child { border-bottom: none; }
+
+.esp-perfil-campo__icon {
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: var(--esp-primary);
+    margin-top: 2px;
+    width: 18px;
+    text-align: center;
+}
+
+.esp-perfil-campo__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.esp-perfil-campo__text .esp-label {
+    font-size: 0.7rem;
+    margin: 0;
+}
+
+.esp-perfil-campo__text .esp-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* ── SHOW — Tabs ─────────────────────────────────────────── */
+.esp-tabs-nav {
+    padding: 0 20px;
+    border-bottom: 1px solid var(--esp-border);
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.esp-nav-tabs {
+    border-bottom: none;
+    gap: 4px;
+    padding-top: 4px;
+}
+
+.esp-nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: #718096;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 10px 16px;
+    transition: color 0.15s, border-color 0.15s;
+    background: transparent;
+}
+
+.esp-nav-tabs .nav-link:hover {
+    color: var(--esp-primary);
+    border-bottom-color: var(--esp-primary);
+    background: transparent;
+}
+
+.esp-nav-tabs .nav-link.active {
+    color: var(--esp-primary);
+    border-bottom-color: var(--esp-primary);
+    background: transparent;
+    font-weight: 600;
+}
+
+.esp-tab-content {
+    padding: 20px;
+}
+
+.esp-tab-content .esp-detail-card {
+    border: 1px solid var(--esp-border) !important;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    box-shadow: none;
+}
+
+.esp-tab-content .esp-detail-card:last-child { margin-bottom: 0; }
+
+/* ── Firma ───────────────────────────────────────────────── */
+.esp-firma-preview {
+    max-height: 80px;
+    max-width: 220px;
+    border: 1px solid var(--esp-border);
+    border-radius: 6px;
+    padding: 6px;
+    background: #fff;
+}
+
+.esp-firma-upload {
+    border: 2px dashed var(--esp-border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.esp-firma-upload:hover { border-color: var(--esp-primary); }
+.esp-firma-upload input[type="file"] { display: none; }

@@ -1,0 +1,155 @@
+/* ============================================================
+   Sidebar custom — logos + iconos Tabler + modo semi-nav
+   ============================================================ */
+
+/* ── Logos: rectangular (expandido) ↔ redondo (colapsado) ── */
+.sidebar-logo-rect  { display: block; }
+.sidebar-logo-round { display: none;  }
+
+/* Colapsado: muestra logo redondo como círculo */
+.semi-nav .app-logo .sidebar-logo-rect  { display: none; }
+.semi-nav .app-logo .sidebar-logo-round {
+    display: block;
+    width:  44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(var(--primary), .2);
+}
+
+/* Al hacer hover sobre el sidebar colapsado: vuelve el rectangular */
+.semi-nav:hover .app-logo .sidebar-logo-rect  { display: block; }
+.semi-nav:hover .app-logo .sidebar-logo-round { display: none;  }
+
+/* ── Icono base en cada item del nav ─────────────────────── */
+.main-nav > li > a > i.nav-icon {
+    font-size: 1.2rem;
+    width: 1.5rem;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.45rem;
+    margin-top: -2px;
+    transition: margin .2s;
+}
+
+/* ── Etiqueta de texto: span.nav-label ───────────────────── */
+/*
+ * Envolvemos el texto en <span class="nav-label"> para poder
+ * ocultarlo con display:none en semi-nav sin tocar el font-size
+ * del icono padre.
+ */
+.main-nav > li > a > .nav-label {
+    display: inline;
+    transition: opacity .15s;
+}
+
+/* ── Semi-nav colapsado: ocultar texto, centrar icono ─────── */
+.semi-nav .app-nav .main-nav > li:not(.menu-title) > a > .nav-label {
+    display: none !important;
+}
+
+.semi-nav .app-nav .main-nav > li:not(.menu-title) > a {
+    justify-content: center !important;
+}
+
+.semi-nav .app-nav .main-nav > li:not(.menu-title) > a > i.nav-icon {
+    font-size: 1.2rem !important;
+    margin: 0 !important;
+    width: auto !important;
+}
+
+/* ── Al hacer hover: restaurar layout completo ───────────── */
+.semi-nav:hover .app-nav .main-nav > li:not(.menu-title) > a > .nav-label {
+    display: inline !important;
+}
+
+.semi-nav:hover .app-nav .main-nav > li:not(.menu-title) > a {
+    justify-content: flex-start !important;
+}
+
+.semi-nav:hover .app-nav .main-nav > li:not(.menu-title) > a > i.nav-icon {
+    margin-right: 0.45rem !important;
+    width: 1.5rem !important;
+}
+
+/* ── Títulos de sección colapsados ───────────────────────── */
+.semi-nav .app-nav .main-nav > li.menu-title > span {
+    font-size: 0 !important;       /* ocultar texto */
+    display: block;
+    border-top: 1px solid rgba(var(--dark), .08);
+    margin: 4px 8px;
+}
+
+.semi-nav:hover .app-nav .main-nav > li.menu-title > span {
+    font-size: inherit !important;
+    border-top: none;
+    margin: 0;
+}
+
+/* ── Tooltip al hover en modo colapsado ──────────────────── */
+.semi-nav:not(:hover) .app-nav .main-nav > li:not(.menu-title) {
+    position: relative;
+}
+
+.semi-nav:not(:hover) .app-nav .main-nav > li:not(.menu-title) > a:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1a202c;
+    color: #fff;
+    font-size: .78rem;
+    white-space: nowrap;
+    padding: 5px 12px;
+    border-radius: 6px;
+    z-index: 9999;
+    pointer-events: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+
+.semi-nav:not(:hover) .app-nav .main-nav > li:not(.menu-title) > a:hover::before {
+    content: '';
+    position: absolute;
+    left: calc(100% + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #1a202c;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* ── Nav-profile: ocultar nombre/rol en modo colapsado ───── */
+.semi-nav .app-logo .nav-profile .flex-grow-1 {
+    display: none !important;
+}
+
+.semi-nav:hover .app-logo .nav-profile .flex-grow-1 {
+    display: block !important;
+}
+
+/* Centrar el icono de configuración cuando está solo */
+.semi-nav .app-logo .nav-profile {
+    justify-content: center !important;
+}
+
+.semi-nav .app-logo .nav-profile .profile-menu-dropdown {
+    margin-left: 0 !important;
+}
+
+.semi-nav:hover .app-logo .nav-profile {
+    justify-content: flex-start !important;
+}
+
+/* ── Chevron del toggle: animar dirección ────────────────── */
+nav.semi-nav .toggle-semi-nav i {
+    transform: rotate(0deg);
+    transition: transform .25s;
+}
+nav:not(.semi-nav) .toggle-semi-nav i {
+    transform: rotate(180deg);
+    transition: transform .25s;
+}

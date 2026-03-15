@@ -1,0 +1,374 @@
+/**
+ * Desarrollo - Permisos de Usuarios - UI - 2026-02-18
+ * 
+ * Styles: permissions.module.css
+ * 
+ * Propósito: Estilos para el módulo de permisos
+ * 
+ * Principios:
+ * - Sin gradientes
+ * - Variables CSS para mantenimiento
+ * - BEM-like naming
+ */
+
+/* ================================
+   Variables
+   ================================ */
+:root {
+    --perm-primary: #667eea;
+    --perm-primary-dark: #5568d3;
+    --perm-success: #11998e;
+    --perm-danger: #f5576c;
+    --perm-warning: #f6d365;
+    --perm-info: #4facfe;
+    --perm-border: #e0e0e0;
+    --perm-bg-light: #f8f9fa;
+    --perm-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    --perm-radius: 12px;
+    --perm-radius-sm: 8px;
+}
+
+/* ================================
+   Breadcrumb
+   ================================ */
+.permissions-breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.permissions-breadcrumb .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.permissions-breadcrumb .breadcrumb-item {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+}
+
+.permissions-breadcrumb .breadcrumb-item a {
+    color: var(--perm-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.permissions-breadcrumb .breadcrumb-item a:hover {
+    color: var(--perm-primary-dark);
+    text-decoration: underline;
+}
+
+.permissions-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    color: #999;
+    padding: 0 8px;
+}
+
+.permissions-breadcrumb .breadcrumb-item.active {
+    color: #666;
+}
+
+/* ================================
+   Cards
+   ================================ */
+.permissions-card {
+    border: none;
+    border-radius: var(--perm-radius);
+    box-shadow: var(--perm-shadow);
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.permissions-card .card-header {
+    background: white;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 20px;
+}
+
+.permissions-card .card-body {
+    padding: 24px;
+}
+
+/* ================================
+   Table Styles
+   ================================ */
+.permissions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.permissions-table thead th {
+    background: var(--perm-bg-light);
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+.permissions-table thead th:first-child {
+    border-radius: var(--perm-radius-sm) 0 0 0;
+}
+
+.permissions-table thead th:last-child {
+    border-radius: 0 var(--perm-radius-sm) 0 0;
+}
+
+.permissions-table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+}
+
+.permissions-table tbody tr:hover {
+    background: #fafbff;
+}
+
+.permissions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ================================
+   Badges
+   ================================ */
+.permission-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.permission-badge--general {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.permission-badge--granular {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.permission-badge--active {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.permission-badge--inactive {
+    background: #f5f5f5;
+    color: #757575;
+}
+
+/* ================================
+   Module Badge
+   ================================ */
+.module-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--perm-primary);
+}
+
+/* ================================
+   Code
+   ================================ */
+.permission-code {
+    background: var(--perm-bg-light);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #d63384;
+}
+
+/* ================================
+   Actions
+   ================================ */
+.permission-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.permission-actions .btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+/* ================================
+   Filters
+   ================================ */
+.permissions-filters {
+    background: white;
+    border-radius: var(--perm-radius);
+    padding: 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--perm-shadow);
+}
+
+/* ================================
+   Stats Cards
+   ================================ */
+.permission-stat {
+    background: var(--perm-bg-light);
+    border-radius: var(--perm-radius-sm);
+    padding: 16px;
+    text-align: center;
+}
+
+.permission-stat__value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.permission-stat__label {
+    font-size: 0.85rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ================================
+   Empty State
+   ================================ */
+.permission-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.permission-empty-state__icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.permission-empty-state__icon i {
+    font-size: 48px;
+    color: var(--perm-primary);
+}
+
+.permission-empty-state__title {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.permission-empty-state__text {
+    color: #999;
+    margin-bottom: 24px;
+}
+
+/* ================================
+   Sidebar Navigation
+   ================================ */
+.permissions-nav {
+    background: var(--perm-bg-light);
+    border-radius: var(--perm-radius-sm);
+    padding: 8px;
+}
+
+.permissions-nav .nav-link {
+    border-radius: var(--perm-radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.permissions-nav .nav-link:hover {
+    background: #e9ecef;
+}
+
+.permissions-nav .nav-link.active {
+    background: var(--perm-primary);
+    color: white;
+}
+
+.permissions-nav .nav-link i {
+    margin-right: 8px;
+}
+
+/* ================================
+   Template Cards
+   ================================ */
+.template-card {
+    background: white;
+    border-radius: var(--perm-radius);
+    padding: 20px;
+    box-shadow: var(--perm-shadow);
+    transition: all 0.2s;
+    height: 100%;
+}
+
+.template-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.template-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.template-stats {
+    display: flex;
+    gap: 8px;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+@media (max-width: 768px) {
+    .permissions-table thead {
+        display: none;
+    }
+    
+    .permissions-table tbody tr {
+        display: block;
+        margin-bottom: 16px;
+        border: 1px solid var(--perm-border);
+        border-radius: var(--perm-radius);
+        padding: 16px;
+    }
+    
+    .permissions-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .permissions-table tbody td:last-child {
+        border-bottom: none;
+    }
+    
+    .permissions-table tbody td::before {
+        font-weight: 600;
+        color: #666;
+    }
+}

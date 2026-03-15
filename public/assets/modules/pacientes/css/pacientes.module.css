@@ -1,0 +1,323 @@
+/* ============================================================
+   Módulo Pacientes — pacientes.module.css
+   Sin gradientes. Base tipográfica: custom-font-size.css (14px).
+   Paleta: primary #667eea, fondo #f5f7fa, cards #ffffff
+   ============================================================ */
+
+/* ── Variables locales ───────────────────────────────────────────────── */
+:root {
+    --pac-primary:        #667eea;
+    --pac-primary-alpha:  rgba(102, 126, 234, 0.12);
+    --pac-border:         #e8ecf0;
+    --pac-shadow:         0 1px 4px rgba(0, 0, 0, 0.06);
+    --pac-label-color:    #8a94a6;
+    --pac-value-color:    #2d3748;
+    --pac-row-hover:      #f8fafc;
+}
+
+/* ── Cards compartidas ───────────────────────────────────────────────── */
+.pac-stat-card,
+.pac-toolbar,
+.pac-table-card,
+.pac-show-header,
+.pac-detail-card {
+    border: 1px solid var(--pac-border) !important;
+    box-shadow: var(--pac-shadow);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* ── Stats KPI ───────────────────────────────────────────────────────── */
+.pac-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pac-primary-alpha);
+    color: var(--pac-primary);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.pac-stat-icon--success {
+    background: rgba(25, 135, 84, 0.10);
+    color: #198754;
+}
+
+.pac-stat-icon--info {
+    background: rgba(13, 110, 253, 0.10);
+    color: #0d6efd;
+}
+
+.pac-stat-label {
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--pac-label-color);
+    font-weight: 500;
+}
+
+.pac-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--pac-value-color);
+    line-height: 1.2;
+}
+
+/* ── Tabla ───────────────────────────────────────────────────────────── */
+.pac-table thead th {
+    background: #fafbfc;
+    border-bottom: 1px solid var(--pac-border);
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--pac-label-color);
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+}
+
+.pac-table tbody tr {
+    transition: background 0.12s ease;
+}
+
+.pac-table tbody tr:hover {
+    background: var(--pac-row-hover);
+}
+
+.pac-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-color: #f0f3f6;
+    color: var(--pac-value-color);
+    font-size: var(--ki-font-size-sm, 12px);
+}
+
+/* ── Avatar con iniciales ────────────────────────────────────────────── */
+.pac-avatar-sm {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--pac-primary-alpha);
+    color: var(--pac-primary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    user-select: none;
+}
+
+.pac-avatar-lg {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: var(--pac-primary-alpha);
+    color: var(--pac-primary);
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+    user-select: none;
+}
+
+/* ── Botones de acción en tabla ──────────────────────────────────────── */
+.pac-action-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    background: transparent;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    text-decoration: none;
+}
+
+.pac-action-btn:hover {
+    color: var(--pac-primary);
+    border-color: var(--pac-primary);
+    background: var(--pac-primary-alpha);
+}
+
+.pac-action-btn--delete:hover {
+    color: #dc3545;
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.08);
+}
+
+/* ── Labels y valores (show / detalle) ──────────────────────────────── */
+.pac-label {
+    font-size: var(--ki-font-size-xs, 11px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--pac-label-color);
+    font-weight: 500;
+}
+
+.pac-value {
+    font-size: var(--ki-font-size-md, 14px);
+    color: var(--pac-value-color);
+    font-weight: 400;
+}
+
+/* ── Títulos de sección en cards ─────────────────────────────────────── */
+.pac-section-title {
+    font-size: var(--ki-font-size-lg, 15px);
+    font-weight: 600;
+    color: var(--pac-value-color);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--pac-border);
+    margin-bottom: 0;
+}
+
+/* ── Ítems de caso clínico ───────────────────────────────────────────── */
+.pac-caso-item:last-child {
+    border-bottom: none !important;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────── */
+.pac-empty-state {
+    color: #8a94a6;
+    font-size: var(--ki-font-size-sm, 12px);
+}
+
+/* ── Paginación: integración suave ──────────────────────────────────── */
+.pac-table-card .pagination {
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   SHOW — Layout 2 columnas: perfil lateral + panel tabs
+   ============================================================ */
+
+/* Perfil lateral top */
+.pac-perfil-top .pac-avatar-lg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--pac-primary-alpha);
+    color: var(--pac-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Fila de campo en el perfil lateral */
+.pac-perfil-campo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f4f5f7;
+}
+
+.pac-perfil-campo:last-child {
+    border-bottom: none;
+}
+
+.pac-perfil-campo__icon {
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: var(--pac-primary);
+    margin-top: 2px;
+    width: 18px;
+    text-align: center;
+}
+
+.pac-perfil-campo__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.pac-perfil-campo__text .pac-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8a94a6;
+    font-weight: 500;
+    margin: 0;
+}
+
+.pac-perfil-campo__text .pac-value {
+    font-size: 0.85rem;
+    color: #2d3748;
+    font-weight: 500;
+    word-break: break-word;
+    margin: 0;
+}
+
+/* Tabs navegación */
+.pac-tabs-nav {
+    padding: 0 20px;
+    border-bottom: 1px solid #e9ecef;
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.pac-nav-tabs {
+    border-bottom: none;
+    gap: 4px;
+    padding-top: 4px;
+}
+
+.pac-nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: #718096;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 10px 16px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.pac-nav-tabs .nav-link:hover {
+    color: var(--pac-primary);
+    border-bottom-color: var(--pac-primary);
+    background: transparent;
+}
+
+.pac-nav-tabs .nav-link.active {
+    color: var(--pac-primary);
+    border-bottom-color: var(--pac-primary);
+    background: transparent;
+    font-weight: 600;
+}
+
+/* Tab content */
+.pac-tab-content {
+    padding: 20px;
+}
+
+.pac-tab-content .pac-detail-card {
+    border: 1px solid #e9ecef !important;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.pac-tab-content .pac-detail-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Eliminar borde duplicado de cards dentro de tabs */
+.pac-tab-content > .tab-pane > .pac-detail-card {
+    box-shadow: none;
+}

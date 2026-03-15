@@ -1,0 +1,89 @@
+/**
+ * Custom Font Size Configuration
+ * Reduce todos los tamaños de fuente en 2px globalmente
+ */
+
+:root {
+    /* Reducir font-size base de 16px a 14px */
+    --ki-font-size-base: 14px;
+    
+    /* Escala de tamaños reducida */
+    --ki-font-size-xs: 0.643rem;    /* ~9px */
+    --ki-font-size-sm: 0.714rem;    /* ~10px */
+    --ki-font-size-md: 0.857rem;    /* ~12px */
+    --ki-font-size-lg: 1rem;        /* ~14px */
+    --ki-font-size-xl: 1.143rem;    /* ~16px */
+    --ki-font-size-2xl: 1.286rem;   /* ~18px */
+    --ki-font-size-3xl: 1.429rem;   /* ~20px */
+    --ki-font-size-4xl: 1.571rem;   /* ~22px */
+    --ki-font-size-5xl: 1.714rem;   /* ~24px */
+}
+
+/* Aplicar a todo el documento */
+html {
+    font-size: var(--ki-font-size-base);
+}
+
+body {
+    font-size: var(--ki-font-size-base);
+}
+
+/* Reducir headings */
+h1, .h1 { font-size: calc(var(--ki-font-size-base) * 1.8) !important; }
+h2, .h2 { font-size: calc(var(--ki-font-size-base) * 1.6) !important; }
+h3, .h3 { font-size: calc(var(--ki-font-size-base) * 1.4) !important; }
+h4, .h4 { font-size: calc(var(--ki-font-size-base) * 1.25) !important; }
+h5, .h5 { font-size: calc(var(--ki-font-size-base) * 1.125) !important; }
+h6, .h6 { font-size: calc(var(--ki-font-size-base) * 1) !important; }
+
+/* Reducir elementos comunes */
+p, span, div, label, a, button, input, select, textarea {
+    font-size: var(--ki-font-size-md) !important;
+}
+
+/* Tablas */
+table, th, td {
+    font-size: var(--ki-font-size-sm) !important;
+}
+
+/* Cards */
+.card-title {
+    font-size: var(--ki-font-size-lg) !important;
+}
+
+.card-header, .card-body, .card-footer {
+    font-size: var(--ki-font-size-sm) !important;
+}
+
+/* Botones */
+.btn {
+    font-size: var(--ki-font-size-md) !important;
+}
+
+/* Navbar y header */
+.navbar, .header {
+    font-size: var(--ki-font-size-md) !important;
+}
+
+/* Sidebar */
+.sidebar, .sidebar-menu, .sidebar-link {
+    font-size: var(--ki-font-size-sm) !important;
+}
+
+/* Formularios */
+.form-label, .form-text {
+    font-size: var(--ki-font-size-sm) !important;
+}
+
+.form-control {
+    font-size: var(--ki-font-size-md) !important;
+}
+
+/* Títulos de página */
+.page-header h2 {
+    font-size: calc(var(--ki-font-size-base) * 1.5) !important;
+}
+
+.page-header p {
+    font-size: var(--ki-font-size-sm) !important;
+}

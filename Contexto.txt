@@ -1,0 +1,196 @@
+# Contexto - Arquitectura de Componentes y Módulos
+# Expediente Digital - Sistema de Configuración
+# Última actualización: 2026-02-17
+
+## 📁 ESTRUCTURA DE ARCHIVOS COMPLETA
+
+### Controllers (app/Http/Controllers/Settings/)
+- SettingsController.php          # Orquestador principal (50 líneas)
+- EmpresaController.php            # Solo lógica de empresa (60 líneas)
+- SucursalesController.php         # Solo lógica de sucursales (100 líneas)
+
+### Services (app/Services/Settings/)
+- EmpresaService.php               # Lógica de negocio empresa (120 líneas)
+- SucursalService.php              # Lógica de negocio sucursales (130 líneas)
+
+### Requests (app/Http/Requests/Settings/)
+- UpdateEmpresaRequest.php         # Validación empresa (60 líneas)
+- StoreSucursalRequest.php         # Validación crear sucursal (50 líneas)
+- UpdateSucursalRequest.php        # Validación editar sucursal (50 líneas)
+
+### Helpers (app/Helpers/)
+- GlobalHelper.php                 # Funciones globales reutilizables (200 líneas)
+
+### Components (resources/views/components/)
+├── ui/
+│   ├── button.blade.php           # Botón genérico
+│   ├── input.blade.php            # Input genérico
+│   ├── toggle.blade.php           # Toggle switch
+│   ├── modal-alert.blade.php      # Modal de alerta (reemplaza alert nativo)
+│   └── modal-confirm.blade.php    # Modal de confirmación (reemplaza confirm nativo)
+└── settings/
+    ├── breadcrumb.blade.php       # Breadcrumb reutilizable
+    ├── navigation.blade.php       # Navegación lateral
+    ├── alert-message.blade.php    # Alertas
+    └── tabs/
+        ├── empresa/
+        │   ├── form.blade.php          # Formulario empresa
+        │   ├── logo-upload.blade.php   # Subida de logo
+        │   └── info-card.blade.php     # Tarjeta informativa
+        └── sucursales/
+            ├── list.blade.php          # Lista de sucursales
+            ├── card.blade.php          # Tarjeta individual
+            ├── modal-create.blade.php  # Modal crear
+            └── modal-edit.blade.php    # Modal editar
+
+### Modules (resources/views/modules/settings/)
+- index.blade.php                # Vista principal (50 líneas)
+- empresa.blade.php              # Módulo empresa (30 líneas)
+- sucursales.blade.php           # Módulo sucursales (80 líneas)
+
+### Assets
+├── public/assets/modules/settings/
+│   ├── css/settings.module.css      # Estilos del módulo
+│   └── js/settings.module.js        # Lógica del módulo
+└── public/assets/components/settings/tabs/empresa/
+    ├── css/
+    └── js/
+
+### Routes (routes/web_routes/settings/)
+- settings.php                   # Todas las rutas de configuración
+
+
+## 📐 PRINCIPIOS DE DISEÑO
+
+### SOLID
+1. **Single Responsibility Principle (SRP)**
+   - Cada controlador tiene una sola responsabilidad
+   - Cada componente tiene una única función
+   - Los services separan la lógica de negocio del controlador
+
+2. **Open/Closed Principle (OCP)**
+   - Los componentes son abiertos para extensión, cerrados para modificación
+   - Se pueden agregar nuevos tabs sin modificar el código existente
+
+3. **Liskov Substitution Principle (LSP)**
+   - Los componentes siguen interfaces consistentes
+
+4. **Interface Segregation Principle (ISP)**
+   - Interfaces pequeñas y específicas por funcionalidad
+
+5. **Dependency Inversion Principle (DIP)**
+   - Inyección de dependencias en controladores y services
+
+### 
+
+ (Don't Repeat Yourself)
+- Componentes reutilizables para UI común
+- Helpers globales para funciones compartidas
+- Partials para código repetido dentro de módulos
+
+### Límites de Líneas de Código
+- **Vistas de módulos**: Máximo 300 líneas (ideal < 150)
+- **Componentes**: Máximo 100 líneas
+- **Partials**: Máximo 50 líneas
+- **Controladores**: Máximo 150 líneas por método
+- **Services**: Máximo 200 líneas por servicio
+
+## 🎯 CONVENCIONES
+
+### Nomenclatura de Componentes
+- `component-name.blade.php` (kebab-case)
+- Los componentes reutilizables van en `components/`
+- Los partials específicos van en `partials/`
+
+### Nomenclatura de Assets
+- `modulo.component.css/js` para componentes
+- `modulo.module.css/js` para módulos
+
+### Cache Busting (Versionado de Assets)
+**IMPORTANTE:** Todos los archivos CSS y JS deben incluir `?v={{ time() }}` para evitar caché del navegador.
+
+**Ejemplo en Blade:**
+```blade
+<!-- CSS -->
+<link rel="stylesheet" href="{{ asset('assets/modules/settings/css/settings.module.css') }}?v={{ time() }}">
+
+<!-- JS -->
+<script src="{{ asset('assets/modules/settings/js/settings.module.js') }}?v={{ time() }}"></script>
+
+<!-- En layouts -->
+<link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/bootstrap.min.css') }}?v={{ time() }}">
+<script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>
+```
+
+**¿Por qué usar `?v={{ time() }}`?**
+- ✅ Fuerza la recarga de assets después de cada cambio
+- ✅ Evita problemas de caché durante el desarrollo
+- ✅ Los usuarios siempre ven la versión más reciente
+- ✅ No requiere configuración adicional de build
+
+**Alternativa para producción:**
+```blade
+<!-- Usar hash del archivo en producción -->
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v={{ filemtime(public_path('assets/css/style.css')) }}">
+
+<!-- O usar versionado de Laravel Mix/Vite -->
+<link rel="stylesheet" href="{{ mix('css/style.css') }}">
+```
+
+### Estructura de Vistas
+```blade
+{{-- 1. Heredar layout --}}
+@extends('layouts.admin.master')
+
+{{-- 2. Push de estilos específicos --}}
+@push('styles')
+@endpush
+
+{{-- 3. Contenido principal --}}
+@section('content')
+    {{-- Usar componentes --}}
+    <x-settings.breadcrumb :items="$breadcrumb" />
+    <x-settings.navigation :tabs="$tabs" />
+    
+    {{-- Incluir módulos --}}
+    @include('modules.settings.empresa')
+@endsection
+
+{{-- 4. Push de scripts --}}
+@push('scripts')
+@endpush
+```
+
+## 📊 DIAGRAMA DE FLUJO
+
+```
+Usuario → SettingsController (orquestador)
+              ↓
+    ┌─────────┴─────────┐
+    ↓                   ↓
+EmpresaController  SucursalesController
+    ↓                   ↓
+EmpresaService     SucursalService
+    ↓                   ↓
+EmpresaRequest     SucursalRequest
+    ↓                   ↓
+Componentes         Componentes
+```
+
+## 🔄 FLUJO DE DATOS
+
+1. **Request** → Valida datos de entrada
+2. **Controller** → Orquesta la petición
+3. **Service** → Ejecuta lógica de negocio
+4. **Model** → Interactúa con la base de datos
+5. **Component/View** → Renderiza la respuesta
+
+## 📝 NOTAS IMPORTANTES
+
+1. **Nunca** escribir lógica de negocio en controladores
+2. **Nunca** escribir queries directamente en controladores
+3. **Siempre** usar components para UI reutilizable
+4. **Siempre** usar partials para dividir vistas grandes
+5. **Siempre** validar con Request classes
+6. **Mantener** vistas por debajo de 300 líneas
+7. **Documentar** funciones complejas en helpers

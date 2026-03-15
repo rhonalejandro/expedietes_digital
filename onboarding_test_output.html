@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo</title>
+    <!-- Bootstrap 3 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/admin-custom.css">
+    </head>
+<body>
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Expediente Digital</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Empresas</a></li>
+                <li><a href="#">Pacientes</a></li>
+                <li><a href="#">Doctores</a></li>
+                <li><a href="#">Cerrar sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Empresas</a></li>
+                    <li><a href="#">Sucursales</a></li>
+                    <li><a href="#">Pacientes</a></li>
+                    <li><a href="#">Doctores</a></li>
+                    <li><a href="#">Citas</a></li>
+                    <li><a href="#">Casos</a></li>
+                    <li><a href="#">Consultas</a></li>
+                    <li><a href="#">Servicios</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h1 class="page-header">Panel Administrativo</h1>
+                <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3>onboarding.Configuración inicial</h3></div>
+                <div class="panel-body">
+                    <form method="POST" action="http://localhost/onboarding">
+                        <input type="hidden" name="_token" value="NEzwYsGtERdcsqwQxowpYKn30pAHPJsuvOntBOl0" autocomplete="off">                        <h4>onboarding.Datos de la empresa</h4>
+                        <div class="form-group">
+                            <label for="empresa_nombre">onboarding.Nombre de la empresa</label>
+                            <input type="text" class="form-control" id="empresa_nombre" name="empresa_nombre" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="empresa_pais">onboarding.País</label>
+                            <input type="text" class="form-control" id="empresa_pais" name="empresa_pais" value="" maxlength="2" required placeholder="MX, AR, US...">
+                        </div>
+                        <hr>
+                        <h4>onboarding.Datos del superusuario</h4>
+                        <div class="form-group">
+                            <label for="usuario_nombre">onboarding.Nombre completo</label>
+                            <input type="text" class="form-control" id="usuario_nombre" name="usuario_nombre" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="usuario_email">onboarding.Correo electrónico</label>
+                            <input type="email" class="form-control" id="usuario_email" name="usuario_email" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="usuario_password">onboarding.Contraseña</label>
+                            <input type="password" class="form-control" id="usuario_password" name="usuario_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="usuario_password_confirmation">onboarding.Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="usuario_password_confirmation" name="usuario_password_confirmation" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">onboarding.Completar configuración inicial</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="text-muted">&copy; 2026 Expediente Digital</p>
+        </div>
+    </footer>
+    <!-- Bootstrap 3 JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </body>
+</html>

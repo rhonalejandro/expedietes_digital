@@ -1,0 +1,387 @@
+/**
+ * Settings Module Styles
+ * Estilos específicos para el módulo de configuración
+ */
+
+/* ================================
+   Variables
+   ================================ */
+:root {
+    --settings-primary: #667eea;
+    --settings-primary-dark: #5568d3;
+    --settings-success: #11998e;
+    --settings-warning: #f5576c;
+    --settings-info: #4facfe;
+    --settings-border: #e0e0e0;
+    --settings-bg-light: #f8f9fa;
+    --settings-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    --settings-shadow-hover: 0 4px 20px rgba(0,0,0,0.08);
+    --settings-radius: 12px;
+    --settings-radius-sm: 8px;
+}
+
+/* ================================
+   Breadcrumb
+   ================================ */
+.settings-breadcrumb {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.settings-breadcrumb .breadcrumb-item {
+    position: static !important;
+    z-index: auto !important;
+}
+
+.settings-breadcrumb .breadcrumb-item a {
+    color: var(--settings-primary) !important;
+    text-decoration: none !important;
+}
+
+.settings-breadcrumb .breadcrumb-item a:hover {
+    text-decoration: underline !important;
+}
+
+/* ================================
+   Navigation Sidebar
+   ================================ */
+.settings-nav-container {
+    position: relative;
+    z-index: 2;
+}
+
+.settings-nav {
+    border-radius: var(--settings-radius-sm) !important;
+    background: var(--settings-bg-light) !important;
+    padding: 6px !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+.settings-nav .nav-item {
+    margin-bottom: 4px;
+}
+
+.settings-nav .nav-link {
+    border-radius: var(--settings-radius-sm) !important;
+    padding: 10px 12px !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    color: #555 !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    text-align: left !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.settings-nav .nav-link i {
+    margin-right: 8px !important;
+    font-size: 1rem;
+}
+
+.settings-nav .nav-link:hover {
+    background: #e9ecef !important;
+}
+
+.settings-nav .nav-link.active {
+    background-color: var(--settings-primary) !important;
+    color: white !important;
+}
+
+.settings-nav .badge {
+    font-size: 0.7rem !important;
+    padding: 2px 8px !important;
+    margin-left: auto;
+}
+
+/* ================================
+   Cards
+   ================================ */
+.settings-card {
+    border: none !important;
+    border-radius: var(--settings-radius) !important;
+    box-shadow: var(--settings-shadow) !important;
+    background: white !important;
+    position: relative !important;
+    overflow: visible !important;
+    margin-bottom: 1.5rem;
+}
+
+.settings-card .card-header {
+    background: white !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding: 20px !important;
+}
+
+.settings-card .card-body {
+    padding: 24px !important;
+}
+
+/* ================================
+   Forms
+   ================================ */
+.settings-form .form-control,
+.settings-form .form-select {
+    border-radius: var(--settings-radius-sm) !important;
+    border: 1px solid var(--settings-border) !important;
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+}
+
+.settings-form .form-control:focus,
+.settings-form .form-select:focus {
+    border-color: var(--settings-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15) !important;
+}
+
+.settings-form .form-label {
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    color: #555 !important;
+    margin-bottom: 4px !important;
+}
+
+.setting-section-title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+/* ================================
+   Logo Upload
+   ================================ */
+.company-logo-preview {
+    width: 140px !important;
+    height: 140px !important;
+    border-radius: var(--settings-radius-sm) !important;
+    object-fit: contain !important;
+    border: 2px solid var(--settings-border) !important;
+    background: #fafafa !important;
+    padding: 10px !important;
+}
+
+.logo-upload-btn {
+    background: var(--settings-primary) !important;
+    color: white !important;
+    padding: 8px 14px !important;
+    border-radius: var(--settings-radius-sm) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: inline-block !important;
+    margin-top: 10px !important;
+    font-size: 0.9rem !important;
+    border: none !important;
+}
+
+.logo-upload-btn:hover {
+    background: var(--settings-primary-dark) !important;
+    color: white !important;
+}
+
+/* ================================
+   Sucursales Cards
+   ================================ */
+.sucursal-card {
+    border: 1px solid #e9ecef !important;
+    border-radius: var(--settings-radius) !important;
+    padding: 20px !important;
+    transition: all 0.2s ease !important;
+    background: white !important;
+    height: 100%;
+}
+
+.sucursal-card:hover {
+    box-shadow: var(--settings-shadow-hover) !important;
+    transform: translateY(-2px) !important;
+    border-color: var(--settings-primary) !important;
+}
+
+.sucursal-card.active {
+    background: #fafbff !important;
+}
+
+.sucursal-card.inactive {
+    opacity: 0.75 !important;
+}
+
+/* Imagen de sucursal */
+.sucursal-imagen-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: var(--settings-radius-sm);
+    margin-bottom: 12px;
+}
+
+.sucursal-imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid var(--settings-border);
+}
+
+.sucursal-imagen.d-flex-center {
+    background: #fafafa;
+}
+
+/* Badge de estado (ya no se usa pero se mantiene por compatibilidad) */
+.sucursal-badge {
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+}
+
+.badge-active {
+    background: #d4edda !important;
+    color: #155724 !important;
+}
+
+.badge-inactive {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+}
+
+/* Toggle Switch para activar/desactivar */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    display: inline-block;
+    margin: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--settings-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* ================================
+   Sucursal Imagen Preview (Modals)
+   ================================ */
+.sucursal-imagen-preview-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.sucursal-imagen-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--settings-radius-sm);
+    border: 2px solid var(--settings-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* ================================
+   Alerts
+   ================================ */
+.alert-custom {
+    border-radius: var(--settings-radius-sm) !important;
+    border: none !important;
+    padding: 12px 16px !important;
+    font-size: 0.9rem !important;
+}
+
+/* ================================
+   Modal
+   ================================ */
+.modal-header {
+    background: var(--settings-primary) !important;
+    color: white !important;
+    border-radius: var(--settings-radius) var(--settings-radius) 0 0 !important;
+    padding: 16px 20px !important;
+}
+
+.modal-content {
+    border-radius: var(--settings-radius) !important;
+    border: none !important;
+}
+
+.btn-close {
+    filter: brightness(0) invert(1) !important;
+}
+
+/* ================================
+   Empty State
+   ================================ */
+.empty-state {
+    text-align: center !important;
+    padding: 40px 20px !important;
+}
+
+.empty-state-icon {
+    width: 80px !important;
+    height: 80px !important;
+    margin: 0 auto 16px !important;
+    background: #f0f0ff !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ================================
+   Toggle Switch
+   ================================ */
+.form-check-input[type="checkbox"]:checked {
+    background-color: var(--settings-primary);
+    border-color: var(--settings-primary);
+}
+
+/* ================================
+   Responsive
+   ================================ */
+@media (max-width: 991px) {
+    .settings-nav {
+        margin-bottom: 1rem;
+    }
+    
+    .sucursal-card {
+        margin-bottom: 1rem;
+    }
+}
