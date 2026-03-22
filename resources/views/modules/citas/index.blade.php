@@ -59,19 +59,19 @@
             storeUrl        : '{{ route('citas.store') }}',
             baseUrl         : '{{ url('citas') }}',
             sucursalHorario : SUCURSALES_HORARIO,
+            modoAgenda      : '{{ $modoAgenda }}',
         });
-        MiniCal.init();
+        MiniCal.init({ modoAgenda: '{{ $modoAgenda }}' });
 
-        // Select2 en el select de especialistas
+        // Select2 en el select de especialistas.
+        // Select2 v4+ dispara 'change' nativo sobre el <select>, así que
+        // MiniCal lo captura directamente — no necesitamos dispatchEvent.
         $('#cc-especialista').select2({
             dropdownParent: $('#modal-crear-cita'),
             placeholder: 'Buscar especialista...',
             allowClear: true,
             width: '100%',
             language: { noResults: () => 'Sin resultados' },
-        }).on('change', function () {
-            // Disparar el evento que usa MiniCal
-            this.dispatchEvent(new Event('change'));
         });
     </script>
 @endpush

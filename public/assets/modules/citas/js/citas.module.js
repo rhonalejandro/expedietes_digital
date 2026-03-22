@@ -64,6 +64,21 @@ const CitasModule = (function () {
             slotMaxTime:      String(_getEndHour()).padStart(2,'0')   + ':00:00',
             eventTimeFormat:  { hour: '2-digit', minute: '2-digit', hour12: false },
 
+            // ── Drag & drop ──────────────────────────────────────────────────
+            editable:         true,
+            snapDuration:     '00:10:00',
+            // En modo estricto FullCalendar bloquea visualmente el solapamiento
+            eventOverlap:     CONFIG.modoAgenda === 'sobrecarga',
+
+            eventDrop: function (info) {
+                _moverCita(info.event, info.revert);
+            },
+
+            eventResize: function (info) {
+                _moverCita(info.event, info.revert);
+            },
+            // ────────────────────────────────────────────────────────────────
+
             events: _fetchEventosFC,
 
             select: function (info) {
@@ -75,7 +90,23 @@ const CitasModule = (function () {
             },
 
             eventDidMount: function (info) {
-                const p = info.event.extendedProps;
+                const p   = info.event.extendedProps;
+                const col = info.event.backgroundColor || COLORES.pendiente.bg;
+
+                // Fondo blanco + borde izquierdo de color — usando 'important'
+                // para ganar sobre los inline styles que inyecta FullCalendar
+                const el = info.el;
+                el.style.setProperty('background-color', '#fff',           'important');
+                el.style.setProperty('border-top',       '1px solid #e2e8f0', 'important');
+                el.style.setProperty('border-right',     '1px solid #e2e8f0', 'important');
+                el.style.setProperty('border-bottom',    '1px solid #e2e8f0', 'important');
+                el.style.setProperty('border-left',      '5px solid ' + col,  'important');
+                el.style.setProperty('color',            '#2d3748',           'important');
+
+                // El inner wrapper de FC también lleva color inline
+                const main = info.el.querySelector('.fc-event-main');
+                if (main) main.style.setProperty('color', '#2d3748', 'important');
+
                 info.el.title = [
                     info.event.title,
                     p.especialista  || '',
@@ -107,6 +138,72 @@ const CitasModule = (function () {
             successCb(data);
         })
         .catch(failureCb);
+    }
+
+    // ── Mover cita (drag & drop — FullCalendar y Recursos) ───────────────────
+
+    function _moverCita(event, revertFn) {
+        const start      = event.start;
+        const end        = event.end;
+        const fecha      = start.toISOString().slice(0, 10);
+        const horaInicio = String(start.getHours()).padStart(2,'0') + ':' + String(start.getMinutes()).padStart(2,'0');
+        const horaFin    = String(end.getHours()).padStart(2,'0')   + ':' + String(end.getMinutes()).padStart(2,'0');
+
+        fetch(`${CONFIG.baseUrl}/${event.id}/mover`, {
+            method:  'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CONFIG.csrf,
+                'Accept':       'application/json',
+            },
+            body: JSON.stringify({ fecha, hora_inicio: horaInicio, hora_fin: horaFin }),
+        })
+        .then(r => {
+            if (!r.ok) {
+                return r.json().then(e => {
+                    const msg = e.errors?.hora_inicio?.[0] || e.message || 'No se pudo mover la cita.';
+                    throw new Error(msg);
+                });
+            }
+            return r.json();
+        })
+        .then(() => {
+            _toast('Cita movida correctamente.', 'success');
+        })
+        .catch(err => {
+            if (revertFn) revertFn();
+            _toast(err.message || 'Error al mover la cita.', 'danger');
+        });
+    }
+
+    // Versión para el grid de recursos (sin objeto FullCalendar event)
+    function _moverCitaRec(citaId, fecha, horaInicio, horaFin, onError) {
+        fetch(`${CONFIG.baseUrl}/${citaId}/mover`, {
+            method:  'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CONFIG.csrf,
+                'Accept':       'application/json',
+            },
+            body: JSON.stringify({ fecha, hora_inicio: horaInicio, hora_fin: horaFin }),
+        })
+        .then(r => {
+            if (!r.ok) {
+                return r.json().then(e => {
+                    const msg = e.errors?.hora_inicio?.[0] || e.message || 'Solapamiento detectado.';
+                    throw new Error(msg);
+                });
+            }
+            return r.json();
+        })
+        .then(() => {
+            _toast('Cita movida correctamente.', 'success');
+            _renderRecursos();
+        })
+        .catch(err => {
+            if (onError) onError();
+            _toast(err.message || 'Error al mover la cita.', 'danger');
+        });
     }
 
     // ── Vista Tabs ────────────────────────────────────────────────────────────
@@ -334,7 +431,7 @@ const CitasModule = (function () {
                 const color  = ev.backgroundColor || COLORES.pendiente.bg;
                 eventosHTML += `
                     <div class="rec-event"
-                         style="top:${top}px;height:${height}px;background:${color};"
+                         style="top:${top}px;height:${height}px;border-left:5px solid ${color};"
                          data-cita-id="${ev.id}">
                         <div class="rec-event-title">${ev.title}</div>
                         <div class="rec-event-time">${ev.start.slice(11,16)} – ${ev.end.slice(11,16)}</div>
@@ -354,7 +451,8 @@ const CitasModule = (function () {
 
             const colWStyle = colW ? `width:${colW}px;` : '';
             espColsHTML += `
-                <div class="rec-esp-col" style="height:${gridHeight}px;${colWStyle}flex-shrink:0;">
+                <div class="rec-esp-col" style="height:${gridHeight}px;${colWStyle}flex-shrink:0;"
+                     data-fecha="${fecha}" data-esp-id="${id}">
                     ${linesHTML}${slotsHTML}${eventosHTML}${nowHTML}
                 </div>`;
         });
@@ -370,8 +468,6 @@ const CitasModule = (function () {
             </div>`;
 
         // ── Modo ajustado: sincronizar anchos header → columna ───
-        // El header tiene ancho natural (= font-size del texto vertical + padding).
-        // Las columnas del grid deben coincidir exactamente.
         if (modoAjustado) {
             requestAnimationFrame(() => {
                 const headers = container.querySelectorAll('.rec-esp-header');
@@ -381,6 +477,135 @@ const CitasModule = (function () {
                 });
             });
         }
+
+        // ── Drag & drop en grid de recursos ──────────────────────
+        _initRecursosDragDrop(container);
+    }
+
+    // ── Drag & drop para la vista Recursos ───────────────────────────────────
+
+    function _initRecursosDragDrop(container) {
+        // Tooltip flotante (se reutiliza entre renders)
+        let tooltip = document.getElementById('rec-drag-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'rec-drag-tooltip';
+            tooltip.style.cssText = [
+                'position:fixed',
+                'z-index:9999',
+                'background:#2d3748',
+                'color:#fff',
+                'padding:4px 12px',
+                'border-radius:6px',
+                'font-size:.8rem',
+                'font-weight:700',
+                'pointer-events:none',
+                'display:none',
+                'box-shadow:0 2px 8px rgba(0,0,0,.25)',
+                'white-space:nowrap',
+            ].join(';');
+            document.body.appendChild(tooltip);
+        }
+
+        let _dragId      = null;
+        let _dragDurMin  = 0;     // duración de la cita en minutos
+        let _dragOffMin  = 0;     // dónde agarró el usuario dentro del evento (minutos)
+
+        // Helpers
+        function _snap10(m) { return Math.round(m / 10) * 10; }
+        function _minToHHMM(m) {
+            m = Math.max(0, Math.min(m, 23 * 60 + 59));
+            return String(Math.floor(m / 60)).padStart(2,'0') + ':' + String(m % 60).padStart(2,'0');
+        }
+        function _yToStartMin(clientY, colEl) {
+            const relY = clientY - colEl.getBoundingClientRect().top;
+            const absMin = _getStartHour() * 60 + Math.max(0, relY) / PX_PER_MIN;
+            return _snap10(absMin - _dragOffMin);
+        }
+
+        // ── Activar draggable en eventos ──────────────────────────
+        container.querySelectorAll('.rec-event').forEach(el => {
+            el.setAttribute('draggable', 'true');
+
+            el.addEventListener('dragstart', function (e) {
+                _dragId     = this.dataset.citaId;
+                _dragDurMin = Math.round(parseInt(this.style.height) / PX_PER_MIN);
+
+                // Dónde dentro del evento agarró el usuario
+                const offsetY  = e.clientY - this.getBoundingClientRect().top;
+                _dragOffMin    = _snap10(offsetY / PX_PER_MIN);
+
+                // Ghost transparente: usamos el tooltip como indicador visual
+                const ghost = document.createElement('div');
+                ghost.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0';
+                document.body.appendChild(ghost);
+                e.dataTransfer.setDragImage(ghost, 0, 0);
+                setTimeout(() => ghost.remove(), 0);
+
+                e.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => { this.style.opacity = '0.35'; }, 0);
+            });
+
+            el.addEventListener('dragend', function () {
+                this.style.opacity = '';
+                tooltip.style.display = 'none';
+                _dragId = null;
+            });
+        });
+
+        // ── Columnas como drop zones ──────────────────────────────
+        container.querySelectorAll('.rec-esp-col').forEach(col => {
+            col.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (!_dragId) return;
+
+                const startMin = _yToStartMin(e.clientY, this);
+                const endMin   = startMin + _dragDurMin;
+                tooltip.textContent  = _minToHHMM(startMin) + ' – ' + _minToHHMM(endMin);
+                tooltip.style.display = 'block';
+                tooltip.style.left   = (e.clientX + 14) + 'px';
+                tooltip.style.top    = (e.clientY - 14) + 'px';
+            });
+
+            col.addEventListener('dragleave', function (e) {
+                // Solo ocultar si realmente salió de la columna
+                if (!this.contains(e.relatedTarget)) {
+                    tooltip.style.display = 'none';
+                }
+            });
+
+            col.addEventListener('drop', function (e) {
+                e.preventDefault();
+                tooltip.style.display = 'none';
+                if (!_dragId) return;
+
+                const fecha    = this.dataset.fecha;
+                const startMin = _yToStartMin(e.clientY, this);
+                const endMin   = startMin + _dragDurMin;
+
+                // Guardar posición visual del evento para revertir si falla
+                const evEl = container.querySelector(`.rec-event[data-cita-id="${_dragId}"]`);
+                const origTop  = evEl ? evEl.style.top : null;
+
+                // Mover visualmente de inmediato (optimistic)
+                if (evEl) {
+                    evEl.style.top = (startMin - _getStartHour() * 60) * PX_PER_MIN + 'px';
+                    evEl.querySelector('.rec-event-time').textContent =
+                        _minToHHMM(startMin) + ' – ' + _minToHHMM(endMin);
+                }
+
+                _moverCitaRec(
+                    _dragId,
+                    fecha,
+                    _minToHHMM(startMin),
+                    _minToHHMM(endMin),
+                    // onError: revertir posición visual
+                    () => { if (evEl && origTop !== null) evEl.style.top = origTop; }
+                );
+                _dragId = null;
+            });
+        });
     }
 
     function _minutosDesdeInicio(timeStr) {
@@ -555,6 +780,24 @@ const CitasModule = (function () {
 
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
+
+            // En modo sobrecarga copiar campos libres a los hidden que espera el backend
+            if (CONFIG.modoAgenda === 'sobrecarga') {
+                const fechaSb = document.getElementById('cc-fecha-sb');
+                const hiSb    = document.getElementById('cc-hi-sb');
+                const hfSb    = document.getElementById('cc-hf-sb');
+                if (!fechaSb?.value || !hiSb?.value || !hfSb?.value) {
+                    _toast('Completa la fecha y las horas.', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = isEdit
+                        ? '<i class="ti ti-check me-1"></i>Actualizar Cita'
+                        : '<i class="ti ti-check me-1"></i>Guardar Cita';
+                    return;
+                }
+                document.getElementById('cc-fecha-hidden').value         = fechaSb.value;
+                document.getElementById('cc-hora-inicio-hidden').value   = hiSb.value;
+                document.getElementById('cc-hora-fin-hidden').value      = hfSb.value;
+            }
 
             const url    = isEdit ? `${CONFIG.baseUrl}/${editId}` : CONFIG.storeUrl;
             const body   = new FormData(form);
@@ -1055,27 +1298,43 @@ const MiniCal = (function () {
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    let _modoAgenda = 'estricto';
+
     // ── Arranque ──────────────────────────────────────────────────────────────
-    function init() {
+    function init(cfg) {
+        if (cfg && cfg.modoAgenda) _modoAgenda = cfg.modoAgenda;
+
         const sel = document.getElementById('cc-especialista');
         if (!sel) return;
 
         _initAutocompletePac();
 
-        // Soporta tanto Select2 (jQuery event) como select nativo
+        // Soporta tanto Select2 (jQuery event) como select nativo.
+        // Select2 v4+ dispara 'change' nativo sobre el <select>,
+        // así que un solo listener nativo es suficiente.
         function _onEspChange() {
             _espId = sel.value || null;
             _reset();
             if (_espId) {
-                document.getElementById('cc-bloque-calendario').style.display = '';
-                _cargarMes();
+                if (_modoAgenda === 'sobrecarga') {
+                    document.getElementById('cc-bloque-sobrecarga').style.display = '';
+                    _mostrarCamposExtra();
+                } else {
+                    document.getElementById('cc-bloque-calendario').style.display = '';
+                    _cargarMes();
+                }
             } else {
-                document.getElementById('cc-bloque-calendario').style.display = 'none';
+                document.getElementById('cc-bloque-calendario').style.display  = 'none';
+                document.getElementById('cc-bloque-sobrecarga').style.display  = 'none';
             }
         }
-        sel.addEventListener('change', _onEspChange);
-        // Select2 dispara 'change' sobre el elemento nativo también,
-        // así que un solo listener es suficiente.
+        // Select2 dispara jQuery 'change', no el evento nativo DOM.
+        // Si jQuery está disponible lo usamos siempre para capturar ambos casos.
+        if (typeof $ !== 'undefined') {
+            $(sel).on('change', _onEspChange);
+        } else {
+            sel.addEventListener('change', _onEspChange);
+        }
 
         // Cuando se abre el modal, resetear
         const modal = document.getElementById('modal-crear-cita');
@@ -1091,7 +1350,8 @@ const MiniCal = (function () {
         _mesActual.setDate(1);
         _disponib = {};
 
-        document.getElementById('cc-bloque-slots').style.display    = 'none';
+        document.getElementById('cc-bloque-slots').style.display     = 'none';
+        document.getElementById('cc-bloque-sobrecarga').style.display = 'none';
         document.getElementById('cc-bloque-paciente').style.display  = 'none';
         document.getElementById('cc-bloque-servicio').style.display  = 'none';
         document.getElementById('cc-bloque-lead1').style.display     = 'none';
@@ -1115,7 +1375,8 @@ const MiniCal = (function () {
         if (typeof $ !== 'undefined' && $('#cc-especialista').data('select2')) {
             $('#cc-especialista').val('').trigger('change.select2');
         }
-        document.getElementById('cc-bloque-calendario').style.display = 'none';
+        document.getElementById('cc-bloque-calendario').style.display  = 'none';
+        document.getElementById('cc-bloque-sobrecarga').style.display  = 'none';
         document.getElementById('cc-calendario').innerHTML = '';
         // Limpiar autocomplete paciente
         const pacInput = document.getElementById('cc-pac-input');
@@ -1209,12 +1470,30 @@ const MiniCal = (function () {
 
         document.getElementById('cc-calendario').innerHTML = html;
 
-        // Navegación entre meses
-        document.getElementById('cc-cal-prev').addEventListener('click', () => {
+        // Navegación entre meses — nunca retroceder antes del mes actual
+        const _hoyRef = new Date();
+        const _mesMinimo = new Date(_hoyRef.getFullYear(), _hoyRef.getMonth(), 1);
+
+        const btnPrev = document.getElementById('cc-cal-prev');
+        const btnNext = document.getElementById('cc-cal-next');
+
+        // Deshabilitar visualmente si ya estamos en el mes mínimo
+        const _esMesMinimo = _mesActual.getFullYear() === _mesMinimo.getFullYear() &&
+                             _mesActual.getMonth()    === _mesMinimo.getMonth();
+        if (_esMesMinimo) {
+            btnPrev.setAttribute('disabled', 'disabled');
+            btnPrev.style.opacity = '0.3';
+            btnPrev.style.cursor  = 'not-allowed';
+        }
+
+        btnPrev.addEventListener('click', () => {
+            const anterior = new Date(_mesActual);
+            anterior.setMonth(anterior.getMonth() - 1);
+            if (anterior < _mesMinimo) return;   // bloquear
             _mesActual.setMonth(_mesActual.getMonth() - 1);
             _cargarMes();
         });
-        document.getElementById('cc-cal-next').addEventListener('click', () => {
+        btnNext.addEventListener('click', () => {
             _mesActual.setMonth(_mesActual.getMonth() + 1);
             _cargarMes();
         });

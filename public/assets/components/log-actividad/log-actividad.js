@@ -20,6 +20,7 @@ const LogActividad = (function () {
         eliminada:        { icon: 'ti-trash',         cls: 'eliminacion', label: 'eliminó' },
         estado_cambiado:  { icon: 'ti-toggle-left',   cls: 'estado',    label: 'cambió el estado de' },
         estatus_cambiado: { icon: 'ti-flag',          cls: 'estatus',   label: 'cambió el estatus de' },
+        movida:           { icon: 'ti-arrows-move',   cls: 'edicion',   label: 'movió la fecha/hora de' },
         // Fallback para acciones no mapeadas
         _default:         { icon: 'ti-activity',      cls: 'edicion',   label: 'realizó acción' },
     };
@@ -164,7 +165,7 @@ const LogActividad = (function () {
         const ip       = _esc(log.ip      || '—');
 
         const cambios  = _normalizarCambios(detalles.cambios);
-        const esEdicion = ['editado','editada','estado_cambiado','estatus_cambiado'].includes(accion)
+        const esEdicion = ['editado','editada','estado_cambiado','estatus_cambiado','movida'].includes(accion)
                        || (detalles.tipo === 'edicion');
         const esCreacion = ['creado','creada'].includes(accion) || detalles.tipo === 'creacion';
         const esElim     = ['eliminado','eliminada'].includes(accion);

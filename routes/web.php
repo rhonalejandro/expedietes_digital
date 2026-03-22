@@ -32,4 +32,8 @@ Route::middleware(['web'])->group(function () {
     Route::get('/', function () {
         return redirect()->route('login');
     });
+
+    // Widget de Chatwoot (público — sin auth, verificado por token en la API)
+    Route::get('/chatwoot/widget', [\App\Http\Controllers\Chatwoot\WidgetController::class, 'index'])
+        ->name('chatwoot.widget');
 });

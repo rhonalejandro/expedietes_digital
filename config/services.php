@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'chatwoot' => [
+        'widget_token'   => env('CHATWOOT_WIDGET_TOKEN'),
+        'webhook_secret' => env('CHATWOOT_WEBHOOK_SECRET'),
+        'api_url'        => env('CHATWOOT_API_URL', 'https://comunicaciones.globalfeetpanama.com'),
+        'account_id'     => env('CHATWOOT_ACCOUNT_ID', 1),
+        'api_token'      => env('CHATWOOT_API_ACCESS_TOKEN'),
+    ],
+
 ];

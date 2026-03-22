@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Models\Empresa;
 use App\Services\Settings\EmpresaService;
 use App\Services\Settings\SucursalService;
+use Illuminate\Http\Request;
 
 /**
  * SettingsController
@@ -54,5 +56,20 @@ class SettingsController extends Controller
         ];
 
         return view('modules.settings.index', compact('empresa', 'sucursales', 'stats'));
+    }
+
+    public function updateCitas(Request $request)
+    {
+        $request->validate([
+            'modo_agenda' => ['required', 'in:estricto,sobrecarga'],
+        ]);
+
+        $empresa = Empresa::first();
+        if ($empresa) {
+            $empresa->modo_agenda = $request->modo_agenda;
+            $empresa->save();
+        }
+
+        return back()->with('success', 'Configuración de citas guardada correctamente.');
     }
 }

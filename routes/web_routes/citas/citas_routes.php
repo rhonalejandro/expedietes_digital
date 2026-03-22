@@ -27,4 +27,7 @@ Route::middleware(['auth'])->prefix('citas')->name('citas.')->group(function () 
 
     // Cambio rápido de estatus
     Route::patch('/{id}/estatus', [CitaController::class, 'cambiarEstatus'])->name('estatus');
+
+    // Mover cita (drag & drop) — solo fecha/hora
+    Route::patch('/{id}/mover', [CitaController::class, 'mover'])->name('mover');
 });

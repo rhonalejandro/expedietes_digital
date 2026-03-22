@@ -32,7 +32,9 @@ class CitaController extends Controller
             'cierre'   => substr($s->hora_cierre   ?? '18:00:00', 0, 5),
         ]);
 
-        return view('modules.citas.index', compact('especialistas', 'sucursales', 'servicios', 'sucursalHorario'));
+        $modoAgenda = \App\Models\Empresa::first()?->modo_agenda ?? 'estricto';
+
+        return view('modules.citas.index', compact('especialistas', 'sucursales', 'servicios', 'sucursalHorario', 'modoAgenda'));
     }
 
     // ── API JSON para FullCalendar ─────────────────────────────────────────────
@@ -98,7 +100,9 @@ class CitaController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $this->validar($request);
-        $this->checkSolapamiento($data);
+        if ($this->modoAgenda() !== 'sobrecarga') {
+            $this->checkSolapamiento($data);
+        }
 
         $cita = Cita::create($data);
 
@@ -130,7 +134,9 @@ class CitaController extends Controller
         $anterior = $cita->only(['especialista_id','paciente_id','fecha','hora_inicio','hora_fin','estatus','motivo','observaciones','servicio_id']);
 
         $data = $this->validar($request, $id);
-        $this->checkSolapamiento($data, $id);
+        if ($this->modoAgenda() !== 'sobrecarga') {
+            $this->checkSolapamiento($data, $id);
+        }
         $cita->update($data);
 
         LogSistemaHelper::logCitas('editada', $cita->id, $anterior, $data);
@@ -139,6 +145,49 @@ class CitaController extends Controller
             'success' => true,
             'cita'    => $cita->fresh(['especialista.persona', 'paciente.persona', 'servicio']),
             'mensaje' => 'Cita actualizada correctamente.',
+        ]);
+    }
+
+    // ── Mover cita (drag & drop) ──────────────────────────────────────────────
+
+    public function mover(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'fecha'       => 'required|date',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fin'    => 'required|date_format:H:i|after:hora_inicio',
+        ]);
+
+        $cita     = Cita::findOrFail($id);
+        $anterior = $cita->only(['fecha', 'hora_inicio', 'hora_fin']);
+
+        $data = [
+            'especialista_id' => $cita->especialista_id,
+            'fecha'           => $request->fecha,
+            'hora_inicio'     => $request->hora_inicio,
+            'hora_fin'        => $request->hora_fin,
+        ];
+
+        if ($this->modoAgenda() !== 'sobrecarga') {
+            $this->checkSolapamiento($data, $id);
+        }
+
+        $cita->update([
+            'fecha'       => $request->fecha,
+            'hora_inicio' => $request->hora_inicio,
+            'hora_fin'    => $request->hora_fin,
+        ]);
+
+        // 'editada' activa _detallesEdicion → compara campo a campo y guarda antes/después
+        LogSistemaHelper::logCitas('editada', $cita->id, $anterior, [
+            'fecha'       => $request->fecha,
+            'hora_inicio' => $request->hora_inicio,
+            'hora_fin'    => $request->hora_fin,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => 'Cita movida correctamente.',
         ]);
     }
 
@@ -338,6 +387,18 @@ class CitaController extends Controller
             'total'         => $paginator->total(),
             'filtro'        => $filtro,
         ]);
+    }
+
+    // ── Modo agenda (estricto / sobrecarga) ──────────────────────────────────
+
+    private function modoAgenda(): string
+    {
+        static $modo = null;
+        if ($modo === null) {
+            $empresa = \App\Models\Empresa::first();
+            $modo = $empresa?->modo_agenda ?? 'estricto';
+        }
+        return $modo;
     }
 
     // ── Validación de solapamiento ────────────────────────────────────────────

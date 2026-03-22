@@ -275,10 +275,12 @@
     font-size: .76rem !important;
     padding: 2px 5px !important;
     cursor: pointer !important;
-    border: none !important;
 }
 
-.fc-event-title { font-weight: 500 !important; }
+.fc-event:hover { opacity: .88; }
+
+.fc-event-title { font-weight: 600 !important; }
+.fc-event-time  { font-size: .68rem !important; }
 
 .fc-day-today { background: var(--cita-primary-alpha) !important; }
 
@@ -473,7 +475,9 @@
     font-size: .72rem;
     overflow: hidden;
     cursor: pointer;
-    color: #fff;
+    background: #fff;
+    color: var(--cita-text);
+    border: 1px solid var(--cita-border);
     z-index: 3;
     transition: opacity .15s, transform .15s;
     min-height: 20px;
@@ -482,7 +486,7 @@
 .rec-event:hover { opacity: .88; transform: scaleX(.98); }
 
 .rec-event-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rec-event-time  { font-size: .65rem; opacity: .85; }
+.rec-event-time  { font-size: .65rem; color: var(--cita-label); }
 
 /* Slot clickeable */
 .rec-click-slot {

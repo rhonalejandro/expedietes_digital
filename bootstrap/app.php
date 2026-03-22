@@ -10,21 +10,24 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__.'/../routes/web.php',
             __DIR__.'/../routes/web_routes/auth/auth_routes.php',
         ],
+        api: __DIR__.'/../routes/api.php',
+        apiPrefix: 'api',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Redireccionar usuarios no autenticados
         $middleware->redirectGuestsTo('/login');
-        
+
         // Redireccionar usuarios autenticados al dashboard
         $middleware->redirectUsersTo('/dashboard');
-        
+
         // Registrar aliases de middlewares
         $middleware->alias([
             'auth'      => \App\Http\Middleware\Authenticate::class,
             'guest'     => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'developer' => \App\Http\Middleware\DeveloperAccess::class,
+            'api.token' => \App\Http\Middleware\ApiTokenMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

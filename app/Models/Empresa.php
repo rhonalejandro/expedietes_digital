@@ -25,6 +25,7 @@ class Empresa extends Model
         'redes_sociales',
         'direccion',
         'estado',
+        'modo_agenda',
     ];
 
     protected $casts = [

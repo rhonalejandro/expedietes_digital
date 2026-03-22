@@ -33,6 +33,9 @@ Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(functi
     Route::delete('/sucursal/{id}', [SucursalesController::class, 'destroy'])->name('sucursal.destroy');
     Route::get('/sucursal/{id}/toggle', [SucursalesController::class, 'toggleStatus'])->name('sucursal.toggle');
 
+    // Configuración de citas
+    Route::post('/citas', [SettingsController::class, 'updateCitas'])->name('citas.update');
+
     // Permisos
     Route::get('/permisos', [PermissionsController::class, 'index'])->name('permissions.index');
     Route::get('/permisos/create', [PermissionsController::class, 'create'])->name('permissions.create');

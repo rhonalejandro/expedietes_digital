@@ -24,9 +24,10 @@
         <div class="col-lg-3 col-xl-2 mb-4">
             <x-settings.navigation
                 :tabs="[
-                    ['id' => 'empresa', 'label' => 'Empresa', 'icon' => 'ti ti-building'],
-                    ['id' => 'sucursales', 'label' => 'Sucursales', 'icon' => 'ti ti-map-pin', 'badge' => $stats['total_sucursales']],
-                    ['id' => 'permisos', 'label' => 'Permisos', 'icon' => 'ti ti-shield-lock'],
+                    ['id' => 'empresa',   'label' => 'Empresa',   'icon' => 'ti ti-building'],
+                    ['id' => 'sucursales','label' => 'Sucursales','icon' => 'ti ti-map-pin', 'badge' => $stats['total_sucursales']],
+                    ['id' => 'citas',     'label' => 'Citas',     'icon' => 'ti ti-calendar-event'],
+                    ['id' => 'permisos',  'label' => 'Permisos',  'icon' => 'ti ti-shield-lock'],
                 ]"
                 active-tab="empresa"
             />
@@ -37,6 +38,7 @@
             <div class="tab-content" id="settings-tab-content">
                 @include('modules.settings.empresa')
                 @include('modules.settings.sucursales')
+                @include('modules.settings.citas')
                 @include('modules.settings.permissions')
             </div>
         </div>

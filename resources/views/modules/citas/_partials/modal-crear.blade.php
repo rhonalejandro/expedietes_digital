@@ -34,7 +34,7 @@
                             </select>
                         </div>
 
-                        {{-- ── PASO 2 + 3: Calendario + Slots lado a lado ─────────── --}}
+                        {{-- ── PASO 2 + 3: Calendario + Slots (modo estricto) ─────── --}}
                         <div class="col-12" id="cc-bloque-calendario" style="display:none">
                             <div class="cc-cal-slots-wrap">
 
@@ -60,6 +60,36 @@
                                     <input type="hidden" name="hora_fin"    id="cc-hora-fin-hidden"    required>
                                 </div>
 
+                            </div>
+                        </div>
+
+                        {{-- ── PASO 2 + 3: Fecha + Hora libre (modo sobrecarga) ────── --}}
+                        <div class="col-12" id="cc-bloque-sobrecarga" style="display:none">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="cita-form-label">
+                                        <i class="ti ti-calendar-event me-1 text-primary"></i>
+                                        Fecha <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="date" name="fecha_sb" id="cc-fecha-sb"
+                                           class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="cita-form-label">
+                                        <i class="ti ti-clock me-1 text-primary"></i>
+                                        Hora inicio <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="time" name="hora_inicio_sb" id="cc-hi-sb"
+                                           class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="cita-form-label">
+                                        <i class="ti ti-clock-off me-1 text-primary"></i>
+                                        Hora fin <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="time" name="hora_fin_sb" id="cc-hf-sb"
+                                           class="form-control form-control-sm" required>
+                                </div>
                             </div>
                         </div>
 
