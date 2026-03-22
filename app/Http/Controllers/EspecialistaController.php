@@ -89,6 +89,7 @@ class EspecialistaController extends Controller
                 'email'         => $data['email'] ?? null,
                 'firma'         => $firmaPath,
                 'estado'        => true,
+                'password'      => $data['password'],
             ]);
         });
 
@@ -143,7 +144,7 @@ class EspecialistaController extends Controller
                 $firmaPath = $request->file('firma')->store('especialistas/firmas', 'public');
             }
 
-            $especialista->update([
+            $updateData = [
                 'tratamiento'   => $data['tratamiento'],
                 'profesion'     => $data['profesion'],
                 'especialidad'  => $data['especialidad'] ?? null,
@@ -152,7 +153,12 @@ class EspecialistaController extends Controller
                 'email'         => $data['email'] ?? null,
                 'firma'         => $firmaPath,
                 'estado'        => $estado,
-            ]);
+            ];
+            // Solo actualiza password si se proporcionó uno nuevo
+            if (!empty($data['password'])) {
+                $updateData['password'] = $data['password'];
+            }
+            $especialista->update($updateData);
         });
 
         $actual = [
@@ -217,18 +223,25 @@ class EspecialistaController extends Controller
 
     private function validar(Request $request, ?int $personaId = null): array
     {
+        // En creación la password es requerida; en edición es opcional
+        $esEdicion       = $personaId !== null;
+        $passwordRules   = $esEdicion
+            ? 'nullable|string|min:8|confirmed'
+            : 'required|string|min:8|confirmed';
+
         return $request->validate([
-            'nombre'        => 'required|string|max:100',
-            'apellido'      => 'required|string|max:100',
-            'tratamiento'   => 'required|string|max:20',
-            'profesion'     => 'required|string|max:100',
-            'especialidad'  => 'nullable|string|max:100',
-            'num_colegiado' => 'nullable|string|max:50',
-            'telefono'      => 'nullable|string|max:50',
-            'email'         => 'nullable|email|max:150',
-            'email_persona' => 'nullable|email|max:150',
+            'nombre'           => 'required|string|max:100',
+            'apellido'         => 'required|string|max:100',
+            'tratamiento'      => 'required|string|max:20',
+            'profesion'        => 'required|string|max:100',
+            'especialidad'     => 'nullable|string|max:100',
+            'num_colegiado'    => 'nullable|string|max:50',
+            'telefono'         => 'nullable|string|max:50',
+            'email'            => 'nullable|email|max:150',
+            'email_persona'    => 'nullable|email|max:150',
             'contacto_persona' => 'nullable|string|max:100',
-            'firma'         => 'nullable|file|image|mimes:png|max:2048',
+            'firma'            => 'nullable|file|image|mimes:png|max:2048',
+            'password'         => $passwordRules,
         ]);
     }
 }

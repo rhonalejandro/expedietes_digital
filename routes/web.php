@@ -29,6 +29,9 @@ Route::middleware(['web'])->group(function () {
     // Developer Panel (TOTP-protected, fuera del middleware auth)
     require base_path('routes/web_routes/developer/developer_routes.php');
 
+    // Panel Especialista (guard propio: auth:especialista)
+    require base_path('routes/web_routes/panel_especialista/panelespecialista_routes.php');
+
     Route::get('/', function () {
         return redirect()->route('login');
     });

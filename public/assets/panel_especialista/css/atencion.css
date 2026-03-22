@@ -1,0 +1,439 @@
+/* ================================================================
+   Panel Especialista — Módulo Atención
+   ================================================================ */
+
+/* ── Tarjeta genérica ────────────────────────────────────────── */
+.atc-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+.atc-card-header {
+    display: flex;
+    align-items: center;
+    padding: .875rem 1.25rem;
+    font-weight: 700;
+    font-size: .9rem;
+    color: #1a202c;
+    border-bottom: 1px solid #f0f4f8;
+    background: #fafbfc;
+}
+.atc-card-body { padding: 1.25rem; }
+.atc-badge-count {
+    margin-left: auto;
+    background: rgba(var(--primary),.12);
+    color: rgb(var(--primary));
+    font-size: .72rem;
+    font-weight: 700;
+    padding: .15rem .55rem;
+    border-radius: 20px;
+}
+
+/* ── Paciente ────────────────────────────────────────────────── */
+.atc-paciente-top {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+.atc-avatar {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(var(--primary),1), #764ba2);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.atc-paciente-nombre {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a202c;
+    line-height: 1.3;
+    margin-bottom: .3rem;
+}
+.atc-paciente-meta {
+    font-size: .8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    margin-top: .2rem;
+}
+.atc-motivo-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: .7rem .9rem;
+}
+.atc-motivo-label { font-size: .75rem; font-weight: 600; color: #64748b; margin-bottom: .2rem; }
+.atc-motivo-text  { font-size: .85rem; color: #1a202c; }
+.atc-servicio-box {
+    font-size: .82rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+}
+
+/* ── Historial accordion ─────────────────────────────────────── */
+.atc-empty-hist {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #94a3b8;
+}
+.atc-empty-hist i { font-size: 2rem; display: block; margin-bottom: .5rem; opacity:.4; }
+.atc-empty-hist p  { font-size: .85rem; margin: 0; }
+
+.atc-accordion-item {
+    border-bottom: 1px solid #f0f4f8;
+}
+.atc-accordion-item:last-child { border-bottom: none; }
+
+.atc-accordion-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: .875rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: .75rem;
+    transition: background .15s;
+}
+.atc-accordion-btn:hover { background: #f8fafc; }
+
+.atc-acc-left {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+.atc-acc-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.atc-acc-dot--abierto  { background: #10b981; }
+.atc-acc-dot--cerrado  { background: #94a3b8; }
+
+.atc-acc-title { font-weight: 600; font-size: .85rem; color: #1a202c; }
+.atc-acc-sub   { font-size: .74rem; color: #94a3b8; margin-top: 1px; }
+
+.atc-acc-chevron {
+    font-size: 1rem;
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: transform .2s;
+}
+.atc-accordion-btn:not(.collapsed) .atc-acc-chevron { transform: rotate(180deg); }
+
+.atc-acc-body { padding: .5rem 1.25rem 1rem 1.25rem; }
+
+.atc-hist-notas {
+    font-size: .82rem;
+    color: #64748b;
+    background: #f8fafc;
+    border-left: 3px solid #e2e8f0;
+    padding: .5rem .75rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: .75rem;
+}
+
+.atc-consulta-item {
+    padding: .75rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    margin-bottom: .5rem;
+    border: 1px solid #f0f4f8;
+}
+.atc-consulta-fecha {
+    font-size: .78rem;
+    font-weight: 600;
+    color: rgb(var(--primary));
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    margin-bottom: .4rem;
+}
+.atc-consulta-field {
+    font-size: .8rem;
+    color: #4a5568;
+    margin-top: .25rem;
+    line-height: 1.4;
+}
+.atc-field-lbl { font-weight: 600; color: #1a202c; margin-right: .25rem; }
+
+.atc-consulta-fotos {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    margin-top: .5rem;
+}
+.atc-consulta-fotos a img {
+    width: 56px; height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #e2e8f0;
+    transition: transform .15s;
+}
+.atc-consulta-fotos a img:hover { transform: scale(1.08); border-color: rgba(var(--primary),.4); }
+
+/* ── Formulario consulta ─────────────────────────────────────── */
+.atc-section-title {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin-bottom: .875rem;
+}
+.atc-divider { border-color: #f0f4f8; margin: 1.25rem 0; }
+
+/* ── Toggle caso (existente / nuevo) ─────────────────────────── */
+.atc-caso-toggle {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+}
+.atc-caso-opt {
+    flex: 1;
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    background: #fafbfc;
+}
+.atc-caso-opt i:first-child { font-size: 1.4rem; color: #94a3b8; flex-shrink: 0; }
+.atc-caso-opt-title { font-weight: 600; font-size: .85rem; color: #1a202c; }
+.atc-caso-opt-sub   { font-size: .74rem; color: #94a3b8; margin-top: 1px; }
+.atc-caso-opt-check { margin-left: auto; font-size: 1.1rem; color: rgb(var(--primary)); display: none; }
+
+.atc-caso-opt--active {
+    border-color: rgba(var(--primary), 1);
+    background: rgba(var(--primary), .04);
+}
+.atc-caso-opt--active i:first-child { color: rgb(var(--primary)); }
+.atc-caso-opt--active .atc-caso-opt-check { display: inline; }
+
+/* ── Selector Zonas Podológicas ──────────────────────────────── */
+.atc-zonas-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: .5rem;
+}
+
+.atc-pie-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+}
+
+.atc-pie-titulo {
+    font-size: .78rem;
+    font-weight: 700;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+/* ── SVG Foot diagram ────────────────────────────────────────── */
+.foot-svg {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    cursor: default;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,.08));
+}
+
+/* Foot outline background (non-interactive) */
+.foot-bg-outline {
+    fill: #f1f5f9;
+    stroke: #cbd5e0;
+    stroke-width: 1.5;
+    pointer-events: none;
+}
+
+/* ── Zonas clicables ─────────────────────────────────────────── */
+.zona-path {
+    fill: rgba(203, 213, 224, 0.55);
+    stroke: #94a3b8;
+    stroke-width: 1;
+    cursor: pointer;
+    transition: fill .15s, stroke .15s;
+}
+
+.zona-path:hover {
+    fill: rgba(var(--primary), .25);
+    stroke: rgba(var(--primary), .7);
+}
+
+.zona-path.zona-activa {
+    fill: rgba(var(--primary), .55);
+    stroke: rgba(var(--primary), 1);
+    stroke-width: 1.5;
+}
+
+/* Uñas — distintas del cuerpo del dedo */
+.nail-zona {
+    fill: rgba(241, 245, 249, 0.9);
+    stroke: #94a3b8;
+    stroke-width: 1;
+}
+.nail-zona:hover {
+    fill: rgba(var(--primary), .2);
+    stroke: rgba(var(--primary), .7);
+}
+.nail-zona.zona-activa {
+    fill: rgba(var(--primary), .7);
+    stroke: rgba(var(--primary), 1);
+}
+
+/* Etiquetas del pie */
+.foot-label {
+    font-size: 7px;
+    fill: #94a3b8;
+    font-family: inherit;
+    pointer-events: none;
+    user-select: none;
+}
+.foot-label--sm { font-size: 6px; }
+
+/* ── Chips de zonas seleccionadas ────────────────────────────── */
+.atc-zonas-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+    justify-content: center;
+    min-height: 28px;
+}
+.atc-chips-empty {
+    font-size: .72rem;
+    color: #cbd5e0;
+    font-style: italic;
+}
+.atc-zona-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    background: rgba(var(--primary), .1);
+    color: rgb(var(--primary));
+    border: 1px solid rgba(var(--primary), .25);
+    border-radius: 20px;
+    padding: .15rem .5rem;
+    font-size: .7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .12s;
+}
+.atc-zona-chip:hover { background: rgba(var(--primary), .18); }
+.atc-zona-chip i { font-size: .65rem; }
+
+/* ── Leyenda ─────────────────────────────────────────────────── */
+.atc-zonas-legend {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: .75rem;
+    color: #64748b;
+    margin-top: .25rem;
+    margin-bottom: .5rem;
+}
+.atc-legend-item {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+}
+.atc-legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.atc-legend-dot--nail {
+    background: rgba(var(--primary), .7);
+    border: 1px solid rgba(var(--primary), 1);
+}
+
+/* ── Subida de fotos ─────────────────────────────────────────── */
+.atc-fotos-upload {
+    border: 2px dashed #cbd5e0;
+    border-radius: 12px;
+    padding: 1.75rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    color: #64748b;
+}
+.atc-fotos-upload:hover,
+.atc-fotos-upload.drag-over {
+    border-color: rgba(var(--primary), .6);
+    background: rgba(var(--primary), .03);
+}
+.atc-fotos-icon { font-size: 2.2rem; margin-bottom: .5rem; opacity: .5; display: block; }
+
+.atc-fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: .75rem;
+}
+.atc-foto-preview {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+}
+.atc-foto-preview img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+}
+.atc-foto-preview-body { padding: .5rem; }
+.atc-foto-desc {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: .75rem;
+    color: #64748b;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+}
+.atc-foto-remove {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    border-radius: 50%;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem;
+    cursor: pointer;
+    line-height: 1;
+}
+.atc-foto-remove:hover { background: #e53e3e; }

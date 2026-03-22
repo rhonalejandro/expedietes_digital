@@ -93,6 +93,44 @@
     </div>
 </div>
 
+{{-- Sección: Acceso al Panel Especialista --}}
+<div class="esp-card mb-4">
+    <div class="card-body p-4">
+        <h6 class="fw-semibold text-dark mb-1 pb-2 border-bottom">
+            <i class="ti ti-lock me-2 text-primary"></i>Acceso al Panel Clínico
+        </h6>
+        <p class="text-muted small mb-3">
+            El especialista podrá ingresar a su panel en <strong>/panel/login</strong> con su correo profesional y esta contraseña.
+        </p>
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label class="form-label esp-label">
+                    Contraseña del panel
+                    @if($esp) <span class="text-muted fw-normal">(dejar vacío para no cambiar)</span> @else <span class="text-danger">*</span> @endif
+                </label>
+                <input type="password" name="password"
+                       class="form-control form-control-sm @error('password') is-invalid @enderror"
+                       placeholder="Mínimo 8 caracteres"
+                       {{ $esp ? '' : 'required' }}>
+                @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label esp-label">
+                    Confirmar contraseña
+                    @if(!$esp) <span class="text-danger">*</span> @endif
+                </label>
+                <input type="password" name="password_confirmation"
+                       class="form-control form-control-sm"
+                       placeholder="Repite la contraseña"
+                       {{ $esp ? '' : 'required' }}>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 {{-- Sección: Firma --}}
 <div class="esp-card mb-4">
     <div class="card-body p-4">

@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Caso extends Model
 {
+    protected $fillable = [
+        'paciente_id', 'especialista_id', 'sucursal_id',
+        'motivo', 'descripcion', 'notas_iniciales',
+        'fecha_apertura', 'fecha_cierre', 'estado',
+    ];
+
     // Relación muchos a uno con Paciente
     public function paciente()
     {

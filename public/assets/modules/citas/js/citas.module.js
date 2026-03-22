@@ -66,6 +66,7 @@ const CitasModule = (function () {
 
             // ── Drag & drop ──────────────────────────────────────────────────
             editable:         true,
+            dragScroll:       true,          // permite arrastrar entre días/columnas
             snapDuration:     '00:10:00',
             // En modo estricto FullCalendar bloquea visualmente el solapamiento
             eventOverlap:     CONFIG.modoAgenda === 'sobrecarga',
@@ -142,12 +143,23 @@ const CitasModule = (function () {
 
     // ── Mover cita (drag & drop — FullCalendar y Recursos) ───────────────────
 
+    // Extrae fecha local (no UTC) de un objeto Date
+    function _localDate(d) {
+        return d.getFullYear() + '-' +
+               String(d.getMonth() + 1).padStart(2, '0') + '-' +
+               String(d.getDate()).padStart(2, '0');
+    }
+    function _localTime(d) {
+        return String(d.getHours()).padStart(2, '0') + ':' +
+               String(d.getMinutes()).padStart(2, '0');
+    }
+
     function _moverCita(event, revertFn) {
         const start      = event.start;
         const end        = event.end;
-        const fecha      = start.toISOString().slice(0, 10);
-        const horaInicio = String(start.getHours()).padStart(2,'0') + ':' + String(start.getMinutes()).padStart(2,'0');
-        const horaFin    = String(end.getHours()).padStart(2,'0')   + ':' + String(end.getMinutes()).padStart(2,'0');
+        const fecha      = _localDate(start);       // ← local, no UTC
+        const horaInicio = _localTime(start);
+        const horaFin    = _localTime(end);
 
         fetch(`${CONFIG.baseUrl}/${event.id}/mover`, {
             method:  'PATCH',

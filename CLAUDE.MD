@@ -187,3 +187,37 @@ La API vive en `routes/api.php` bajo `/api/v1` con autenticación Bearer (`ApiTo
 - **Pagos:** tabla `pagos` existe, sin controlador/vistas
 - **Notificaciones:** tabla y modelo existen, flujo no completado
 - **Dashboard KPIs:** `DashboardController` existe pero sin métricas robustas conectadas
+
+---
+
+## Panel Especialista (`/panel`)
+
+Sistema de autenticación **separado** del panel administrativo. Los especialistas inician sesión en `/panel/login` con su correo profesional y password, accediendo a su propia agenda clínica.
+
+### Auth Guard
+- Guard: `especialista` (driver: session, provider: `especialistas`)
+- Modelo: `App\Models\Especialista` extiende `Authenticatable`
+- Campos auth en `especialistas`: `password` (hashed), `remember_token`
+- Siempre usar `Auth::guard('especialista')->user()` — NO `Auth::user()`
+
+### Rutas
+- Definidas en `routes/web_routes/panel_especialista/panelespecialista_routes.php`
+- Prefijo `/panel`, middleware `auth:especialista` para rutas protegidas
+
+### Estructura de archivos
+```
+app/Http/Controllers/PanelEspecialista/   ← controladores del panel
+resources/views/panel_especialista/
+    layouts/master.blade.php              ← layout principal
+    layouts/sidebar.blade.php
+    layouts/header.blade.php
+    auth/login.blade.php
+    agenda/index.blade.php
+    _partials/                            ← partials del panel
+public/assets/panel_especialista/
+    css/panel.css                         ← estilos (prefijo pnl-*)
+    js/                                   ← módulos JS del panel
+```
+
+### ⚠️ IMPORTANTE — Para crear cualquier módulo o componente en el Panel Especialista:
+**Leer primero `ManualDevPanelEspecialista.md`** en la raíz del proyecto antes de escribir cualquier código. Este archivo contiene la estructura de archivos, convenciones de nombres, patrones de controlador, CSS (prefijos `pnl-*`), JS (patrón IIFE `{Modulo}Panel`), estructura de modales, patrones de respuesta, cómo agregar nav items al sidebar y un checklist completo.

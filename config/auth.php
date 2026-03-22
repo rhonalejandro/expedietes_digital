@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'especialista' => [
+            'driver'   => 'session',
+            'provider' => 'especialistas',
+        ],
     ],
 
     /*
@@ -63,6 +68,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\Usuario::class,
+        ],
+
+        'especialistas' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Especialista::class,
         ],
 
         // 'users' => [

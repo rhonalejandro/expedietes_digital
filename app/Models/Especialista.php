@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Especialista extends Model
+class Especialista extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'especialistas';
 
@@ -21,10 +22,17 @@ class Especialista extends Model
         'email',
         'firma',
         'estado',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
-        'estado' => 'boolean',
+        'estado'   => 'boolean',
+        'password' => 'hashed',
     ];
 
     // Nombre completo con tratamiento: "Dr. Juan Pérez"

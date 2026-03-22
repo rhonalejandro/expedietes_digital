@@ -12,7 +12,14 @@ class Consulta extends Model
 {
     protected $table = 'consultas';
     protected $fillable = [
-        'caso_id', 'especialista_id', 'fecha_hora', 'estado', 'diagnostico', 'observaciones', 'tratamiento', 'receta', 'firma_digital'
+        'caso_id', 'cita_id', 'especialista_id',
+        'fecha_hora', 'estado',
+        'observaciones', 'diagnostico', 'tratamiento', 'indicaciones', 'receta',
+        'zonas_afectadas', 'firma_digital',
+    ];
+
+    protected $casts = [
+        'zonas_afectadas' => 'array',
     ];
 
     // Relación muchos a uno con Caso
@@ -25,6 +32,12 @@ class Consulta extends Model
     public function especialista()
     {
         return $this->belongsTo(Especialista::class, 'especialista_id');
+    }
+
+    // Relación muchos a uno con Cita
+    public function cita()
+    {
+        return $this->belongsTo(Cita::class);
     }
 
     // Relación uno a muchos con Adjuntos
