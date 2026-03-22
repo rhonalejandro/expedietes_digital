@@ -17,13 +17,16 @@ const CitasModule = (function () {
     let startHour     = 9;            // hora inicio visible (se ajusta por sucursal)
     let endHour       = 18;           // hora fin visible (se ajusta por sucursal)
 
-    const COLORES = {
-        pendiente:  { bg: '#94a3b8', border: '#64748b', text: '#ffffff' },
-        confirmada: { bg: '#38a169', border: '#2f8a59', text: '#ffffff' },
-        atendida:   { bg: '#4a5568', border: '#2d3748', text: '#ffffff' },
-        cancelada:  { bg: '#e53e3e', border: '#c53030', text: '#ffffff' },
-        no_asistio: { bg: '#dd6b20', border: '#c05621', text: '#ffffff' },
-    };
+    // Colores desde configuración (window.COLORES_ESTATUS) o defaults
+    const _coloresBase = (typeof window.COLORES_ESTATUS !== 'undefined')
+        ? window.COLORES_ESTATUS
+        : { pendiente:'#64748b', confirmada:'#2f8a59', atendida:'#2d3748', cancelada:'#c53030', no_asistio:'#c05621' };
+
+    const COLORES = {};
+    Object.keys(_coloresBase).forEach(function(est) {
+        var hex = _coloresBase[est];
+        COLORES[est] = { bg: hex, border: hex, text: '#ffffff' };
+    });
 
     // START_HOUR / END_HOUR ahora son dinámicos (alias para el grid de recursos)
     const _getStartHour = () => startHour;
@@ -92,7 +95,7 @@ const CitasModule = (function () {
 
             eventDidMount: function (info) {
                 const p   = info.event.extendedProps;
-                const col = info.event.backgroundColor || COLORES.pendiente.bg;
+                const col = info.event.borderColor || info.event.backgroundColor || COLORES.pendiente.border;
 
                 // Fondo blanco + borde izquierdo de color — usando 'important'
                 // para ganar sobre los inline styles que inyecta FullCalendar
@@ -440,7 +443,7 @@ const CitasModule = (function () {
             esp.eventos.forEach(ev => {
                 const top    = _minutosDesdeInicio(ev.start.slice(11, 16));
                 const height = Math.max(_duracionMinutos(ev.start.slice(11, 16), ev.end.slice(11, 16)), 20);
-                const color  = ev.backgroundColor || COLORES.pendiente.bg;
+                const color  = ev.borderColor || ev.backgroundColor || COLORES.pendiente.border;
                 eventosHTML += `
                     <div class="rec-event"
                          style="top:${top}px;height:${height}px;border-left:5px solid ${color};"
@@ -705,10 +708,18 @@ const CitasModule = (function () {
         });
 
         // Búsqueda
-        document.getElementById('sidebar-search')?.addEventListener('input', function () {
+        const searchInput = document.getElementById('sidebar-search');
+        const searchClear = document.getElementById('sidebar-search-clear');
+
+        searchInput?.addEventListener('input', function () {
             filtroTexto = this.value.trim();
+            if (searchClear) searchClear.style.display = filtroTexto ? '' : 'none';
             clearTimeout(this._timer);
             this._timer = setTimeout(() => _refrescar(), 400);
+        });
+
+        searchClear?.addEventListener('click', function () {
+            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
         });
 
         // Filtro sucursal
@@ -933,6 +944,14 @@ const CitasModule = (function () {
             const selectEstatus = modal.querySelector('#select-estatus');
             if (formEstatus)   formEstatus.dataset.citaId = cita.id;
             if (selectEstatus) selectEstatus.value = cita.estatus;
+            // Ocultar si el doctor ya tomó la cita — la recepcionista no puede revertir
+            if (formEstatus) {
+                const bloqueado = ['en_consulta', 'atendida'].includes(cita.estatus);
+                formEstatus.classList.toggle('d-none', bloqueado);
+                // También ocultar el divider anterior para no dejar espacio vacío
+                const dividerEstatus = formEstatus.closest('.cita-ver-block');
+                if (dividerEstatus) dividerEstatus.classList.toggle('d-none', bloqueado);
+            }
 
             // ── Botones footer ──────────────────────────────────────
             const btnEliminar = modal.querySelector('#btn-eliminar-cita');
@@ -1118,11 +1137,12 @@ const CitasModule = (function () {
 
     function _labelEstatus(e) {
         return {
-            pendiente:  'En espera',
-            confirmada: 'Confirmada',
-            atendida:   'Atendida',
-            cancelada:  'Cancelada',
-            no_asistio: 'No asistió',
+            pendiente:   'En espera',
+            confirmada:  'Confirmada',
+            en_consulta: 'En Consulta',
+            atendida:    'Atendida',
+            cancelada:   'Cancelada',
+            no_asistio:  'No asistió',
         }[e] || e;
     }
 

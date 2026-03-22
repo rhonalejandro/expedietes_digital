@@ -57,18 +57,23 @@
             {{-- Campos solo si es nuevo caso --}}
             <div id="nuevo-caso-fields" class="{{ $casoAbierto ? 'd-none' : '' }}">
                 <div class="row g-2 mb-3">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <label class="form-label fw-semibold">Motivo del caso <span class="text-danger">*</span></label>
-                        <input type="text" name="motivo_caso" class="form-control form-control-sm"
-                               placeholder="Ej: Dolor plantar, hallux valgus..."
-                               value="{{ old('motivo_caso', $cita->motivo) }}">
+                        <textarea name="motivo_caso" id="ta-motivo_caso" class="d-none">{{ old('motivo_caso', $cita->motivo) }}</textarea>
+                        <div class="quill-editor" data-target="ta-motivo_caso" data-height="80" style="min-height:80px"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold">Notas iniciales</label>
-                        <textarea name="notas_iniciales" class="form-control form-control-sm" rows="2"
-                                  placeholder="Antecedentes, observaciones iniciales del caso...">{{ old('notas_iniciales') }}</textarea>
+                        <textarea name="notas_iniciales" id="ta-notas_iniciales" class="d-none">{{ old('notas_iniciales') }}</textarea>
+                        <div class="quill-editor" data-target="ta-notas_iniciales" data-height="80" style="min-height:80px"></div>
                     </div>
                 </div>
+
+                {{-- ── Zona Podológica (debajo de motivo del caso) ──── --}}
+                <div class="atc-section-title mt-1">
+                    <i class="ti ti-map-pin"></i> Zona Podológica Afectada <small class="text-muted fw-normal">(opcional)</small>
+                </div>
+                @include('panel_especialista.atencion._partials.zonas-podologicas')
             </div>
 
             <hr class="atc-divider">
@@ -81,43 +86,34 @@
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label fw-semibold">Observaciones</label>
-                    <textarea name="observaciones" class="form-control form-control-sm" rows="3"
-                              placeholder="Hallazgos clínicos, síntomas observados...">{{ old('observaciones') }}</textarea>
+                    <textarea name="observaciones" id="ta-observaciones" class="d-none">{{ old('observaciones') }}</textarea>
+                    <div class="quill-editor" data-target="ta-observaciones" style="min-height:100px"></div>
                 </div>
 
                 <div class="col-12">
                     <label class="form-label fw-semibold">Diagnóstico</label>
-                    <textarea name="diagnostico" class="form-control form-control-sm" rows="3"
-                              placeholder="Diagnóstico clínico...">{{ old('diagnostico') }}</textarea>
+                    <textarea name="diagnostico" id="ta-diagnostico" class="d-none">{{ old('diagnostico') }}</textarea>
+                    <div class="quill-editor" data-target="ta-diagnostico" style="min-height:100px"></div>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Tratamiento</label>
-                    <textarea name="tratamiento" class="form-control form-control-sm" rows="3"
-                              placeholder="Procedimientos realizados, terapias aplicadas...">{{ old('tratamiento') }}</textarea>
+                    <textarea name="tratamiento" id="ta-tratamiento" class="d-none">{{ old('tratamiento') }}</textarea>
+                    <div class="quill-editor" data-target="ta-tratamiento" style="min-height:100px"></div>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Indicaciones</label>
-                    <textarea name="indicaciones" class="form-control form-control-sm" rows="3"
-                              placeholder="Instrucciones para el paciente, cuidados en casa...">{{ old('indicaciones') }}</textarea>
+                    <textarea name="indicaciones" id="ta-indicaciones" class="d-none">{{ old('indicaciones') }}</textarea>
+                    <div class="quill-editor" data-target="ta-indicaciones" style="min-height:100px"></div>
                 </div>
 
                 <div class="col-12">
                     <label class="form-label fw-semibold">Receta</label>
-                    <textarea name="receta" class="form-control form-control-sm" rows="3"
-                              placeholder="Medicamentos, dosis, frecuencia...">{{ old('receta') }}</textarea>
+                    <textarea name="receta" id="ta-receta" class="d-none">{{ old('receta') }}</textarea>
+                    <div class="quill-editor" data-target="ta-receta" style="min-height:100px"></div>
                 </div>
             </div>
-
-            <hr class="atc-divider">
-
-            {{-- ── Sección: Zona Podológica ─────────────────────────── --}}
-            <div class="atc-section-title">
-                <i class="ti ti-map-pin"></i> Zona Podológica Afectada <small class="text-muted fw-normal">(opcional)</small>
-            </div>
-
-            @include('panel_especialista.atencion._partials.zonas-podologicas')
 
             <hr class="atc-divider">
 
@@ -164,3 +160,66 @@
         </ul>
     </div>
 @endif
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+<style>
+    .ql-container { border-radius: 0 0 6px 6px; font-family: inherit; font-size: .875rem; }
+    .ql-toolbar { border-radius: 6px 6px 0 0; background: #f8fafc; border-color: #dee2e6; }
+    .ql-container.ql-snow { border-color: #dee2e6; }
+    .ql-editor { min-height: inherit; }
+    .ql-editor.ql-blank::before { color: #adb5bd; font-style: normal; }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+(function () {
+    const TOOLBAR = [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'header': [2, 3, false] }],
+        ['clean']
+    ];
+
+    document.querySelectorAll('.quill-editor').forEach(function (el) {
+        const taId    = el.dataset.target;
+        const ta      = document.getElementById(taId);
+        const initial = ta ? ta.value.trim() : '';
+
+        const q = new Quill(el, {
+            theme:       'snow',
+            modules:     { toolbar: TOOLBAR },
+            placeholder: ta ? (ta.placeholder || '') : '',
+        });
+
+        // Cargar contenido inicial si existe
+        if (initial) {
+            // Si empieza con <, es HTML; si no, es texto plano
+            if (initial.startsWith('<')) {
+                q.root.innerHTML = initial;
+            } else {
+                q.setText(initial);
+            }
+        }
+
+        // Sincronizar al escribir
+        q.on('text-change', function () {
+            if (ta) ta.value = q.root.innerHTML === '<p><br></p>' ? '' : q.root.innerHTML;
+        });
+    });
+
+    // Sincronizar todos antes de enviar el form
+    document.getElementById('form-consulta')?.addEventListener('submit', function () {
+        document.querySelectorAll('.quill-editor').forEach(function (el) {
+            const ta = document.getElementById(el.dataset.target);
+            const q  = Quill.find(el);
+            if (ta && q) {
+                ta.value = q.root.innerHTML === '<p><br></p>' ? '' : q.root.innerHTML;
+            }
+        });
+    });
+})();
+</script>
+@endpush

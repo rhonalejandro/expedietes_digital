@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PanelEspecialista;
 
+use App\Helpers\LogSistemaHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Adjunto;
 use App\Models\Caso;
@@ -23,6 +24,16 @@ class AtencionController extends Controller
         $cita = Cita::with(['paciente.persona', 'servicio', 'sucursal', 'caso'])
             ->where('especialista_id', $especialista->id)
             ->findOrFail($citaId);
+
+        // Marcar como "en consulta" al abrir la ficha de atención
+        if (in_array($cita->estatus, ['pendiente', 'confirmada'])) {
+            $anterior = $cita->estatus;
+            $cita->update(['estatus' => 'en_consulta']);
+            LogSistemaHelper::logCitas('estatus_cambiado', $cita->id,
+                ['estatus' => $anterior],
+                ['estatus' => 'en_consulta']
+            );
+        }
 
         // Historial de casos del paciente atendidos por este especialista
         $casos = collect();
@@ -89,8 +100,13 @@ class AtencionController extends Controller
                 $casoId = $caso->id;
             }
 
-            // Vincular la cita al caso
+            // Vincular la cita al caso y marcar como atendida
+            $estatusAnterior = $cita->estatus;
             $cita->update(['caso_id' => $casoId, 'estatus' => 'atendida']);
+            LogSistemaHelper::logCitas('estatus_cambiado', $cita->id,
+                ['estatus' => $estatusAnterior],
+                ['estatus' => 'atendida']
+            );
 
             // ── Crear consulta ───────────────────────────────────────────────
             $consulta = Consulta::create([

@@ -61,8 +61,23 @@
 <script src="{{ asset('assets/vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/simplebar/simplebar.js') }}"></script>
 <script src="{{ asset('assets/vendor/phosphor/phosphor.js') }}"></script>
-<script src="{{ asset('assets/js/customizer.js') }}"></script>
-<script src="{{ asset('assets/js/script.js') }}"></script>
+{{-- customizer.js y script.js son del panel admin (rutas relativas incorrectas aquí) --}}
+<script>
+/* Inicializar Simplebar en el sidebar para el panel especialista */
+document.addEventListener('DOMContentLoaded', function () {
+    var sidebarEl = document.querySelector('.semi-nav [data-simplebar]');
+    if (sidebarEl && typeof SimpleBar !== 'undefined') new SimpleBar(sidebarEl);
+
+    /* Toggle sidebar (mismo comportamiento que script.js del admin) */
+    var toggleBtn = document.querySelector('.toggle-semi-nav');
+    var wrapper   = document.querySelector('.app-wrapper');
+    if (toggleBtn && wrapper) {
+        toggleBtn.addEventListener('click', function () {
+            wrapper.classList.toggle('toggle-sidebar');
+        });
+    }
+});
+</script>
 
 @stack('scripts')
 

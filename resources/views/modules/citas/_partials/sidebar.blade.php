@@ -4,9 +4,12 @@
 
         {{-- Buscador --}}
         <div class="sidebar-search-wrap">
-            <i class="ti ti-search"></i>
+            <i class="ti ti-search sidebar-search-icon"></i>
             <input type="text" id="sidebar-search" class="sidebar-search"
                    placeholder="Filtrar por paciente o servicio...">
+            <button type="button" id="sidebar-search-clear" class="sidebar-search-clear" style="display:none" title="Limpiar">
+                <i class="ti ti-x" style="left: 0px !important;"></i>
+            </button>
         </div>
 
         {{-- Vista rápida --}}
@@ -50,18 +53,23 @@
 
     </div>
 
-    {{-- Leyenda estatus --}}
+    {{-- Leyenda estatus — colores desde configuración de empresa --}}
+    @php
+        $coloresEmpresa = \App\Models\Empresa::first()?->colores_estatus ?? \App\Models\Empresa::COLORES_DEFAULT;
+        $estadosLeyenda = [
+            'pendiente'   => 'En espera de confirmación',
+            'confirmada'  => 'Confirmada',
+            'en_consulta' => 'En Consulta',
+            'atendida'    => 'Atendida',
+            'cancelada'   => 'Cancelada',
+            'no_asistio'  => 'No asistió',
+        ];
+    @endphp
     <div class="citas-leyenda">
         <div class="citas-leyenda-title">Estado de citas</div>
-        @foreach([
-            'pendiente'  => ['#94a3b8', 'En espera de confirmación'],
-            'confirmada' => ['#38a169', 'Confirmada'],
-            'cancelada'  => ['#e53e3e', 'Cancelada'],
-            'atendida'   => ['#4a5568', 'Atendida'],
-            'no_asistio' => ['#dd6b20', 'No asistió'],
-        ] as $key => [$color, $label])
+        @foreach($estadosLeyenda as $key => $label)
         <div class="leyenda-item">
-            <span class="leyenda-dot" style="background:{{ $color }};"></span>
+            <span class="leyenda-dot" style="background:{{ $coloresEmpresa[$key] ?? '#64748b' }};"></span>
             {{ $label }}
         </div>
         @endforeach

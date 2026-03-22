@@ -124,6 +124,7 @@
                                     <select id="select-estatus" class="form-select form-select-sm" style="max-width:200px;">
                                         <option value="pendiente">En espera de confirmación</option>
                                         <option value="confirmada">Confirmada</option>
+                                        <option value="en_consulta">En Consulta</option>
                                         <option value="atendida">Atendida</option>
                                         <option value="cancelada">Cancelada</option>
                                         <option value="no_asistio">No asistió</option>

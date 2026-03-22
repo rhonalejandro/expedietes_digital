@@ -16,7 +16,7 @@ use Illuminate\Http\JsonResponse;
 class CitaController extends Controller
 {
     // Estatus válidos
-    private const ESTATUS = ['pendiente', 'confirmada', 'atendida', 'cancelada', 'no_asistio'];
+    private const ESTATUS = ['pendiente', 'confirmada', 'en_consulta', 'atendida', 'cancelada', 'no_asistio'];
     private const ORIGENES = ['web', 'chatwoot', 'mobile', 'telefono'];
 
     // ── Calendario principal ──────────────────────────────────────────────────
@@ -60,19 +60,37 @@ class CitaController extends Controller
             $query->where('sucursal_id', $request->sucursal_id);
         }
 
+        // Búsqueda por paciente o servicio (sin distinción de acentos ni mayúsculas)
+        if ($request->filled('q')) {
+            $q = '%' . trim($request->q) . '%';
+            $query->where(function ($sub) use ($q) {
+                $sub->whereHas('paciente.persona', fn($p) => $p
+                        ->whereRaw('unaccent(nombre) ILIKE unaccent(?)', [$q])
+                        ->orWhereRaw('unaccent(apellido) ILIKE unaccent(?)', [$q]))
+                    ->orWhereRaw('unaccent(nombre_lead) ILIKE unaccent(?)', [$q])
+                    ->orWhereHas('servicio', fn($s) => $s
+                        ->whereRaw('unaccent(nombre) ILIKE unaccent(?)', [$q]));
+            });
+        }
+
         $citas = $query->get();
 
-        // Colores por estatus
-        $colores = [
-            'pendiente'   => ['bg' => '#94a3b8', 'border' => '#64748b', 'text' => '#ffffff'],
-            'confirmada'  => ['bg' => '#38a169', 'border' => '#2f8a59', 'text' => '#ffffff'],
-            'atendida'    => ['bg' => '#4a5568', 'border' => '#2d3748', 'text' => '#ffffff'],
-            'cancelada'   => ['bg' => '#e53e3e', 'border' => '#c53030', 'text' => '#ffffff'],
-            'no_asistio'  => ['bg' => '#dd6b20', 'border' => '#c05621', 'text' => '#ffffff'],
-        ];
+        // Colores desde configuración de la empresa
+        $configurados = \App\Models\Empresa::first()?->colores_estatus
+                      ?? \App\Models\Empresa::COLORES_DEFAULT;
+
+        // Construir mapa: estatus → [bg, border, text]
+        $colores = [];
+        foreach ($configurados as $estatus => $hex) {
+            $colores[$estatus] = [
+                'bg'     => $hex,
+                'border' => $hex,
+                'text'   => '#ffffff',
+            ];
+        }
 
         $eventos = $citas->map(function (Cita $cita) use ($colores) {
-            $color = $colores[$cita->estatus] ?? $colores['pendiente'];
+            $color = $colores[$cita->estatus] ?? ['bg' => '#f1f5f9', 'border' => '#64748b', 'text' => '#1a202c'];
             return [
                 'id'              => $cita->id,
                 'title'           => $cita->nombre_paciente,

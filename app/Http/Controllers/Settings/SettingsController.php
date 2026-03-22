@@ -61,12 +61,22 @@ class SettingsController extends Controller
     public function updateCitas(Request $request)
     {
         $request->validate([
-            'modo_agenda' => ['required', 'in:estricto,sobrecarga'],
+            'modo_agenda'       => ['required', 'in:estricto,sobrecarga'],
+            'colores_estatus'   => ['nullable', 'array'],
+            'colores_estatus.*' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
         $empresa = Empresa::first();
         if ($empresa) {
             $empresa->modo_agenda = $request->modo_agenda;
+
+            if ($request->has('colores_estatus')) {
+                $empresa->colores_estatus = array_merge(
+                    \App\Models\Empresa::COLORES_DEFAULT,
+                    $request->colores_estatus ?? []
+                );
+            }
+
             $empresa->save();
         }
 

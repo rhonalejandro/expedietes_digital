@@ -14,18 +14,21 @@
         <div class="atc-paciente-top">
             <div class="atc-avatar">{{ $iniciales }}</div>
             <div>
-                <div class="atc-paciente-nombre">{{ $nombre }}</div>
+                <div class="atc-paciente-nombre">
+                    @if($cita->paciente_id)
+                        <a href="{{ route('panel.paciente.show', $cita->paciente_id) }}"
+                           style="color:inherit;text-decoration:none;border-bottom:1px dashed currentColor;">
+                            {{ $nombre }}
+                        </a>
+                    @else
+                        {{ $nombre }}
+                    @endif
+                </div>
                 @if($p?->identificacion && $p->identificacion !== 'N/A')
                     <div class="atc-paciente-meta"><i class="ti ti-id-badge"></i> {{ $p->identificacion }}</div>
                 @endif
                 @if($edad)
                     <div class="atc-paciente-meta"><i class="ti ti-calendar-user"></i> {{ $edad }} años</div>
-                @endif
-                @if($p?->contacto)
-                    <div class="atc-paciente-meta"><i class="ti ti-phone"></i> {{ $p->contacto }}</div>
-                @endif
-                @if($p?->email)
-                    <div class="atc-paciente-meta"><i class="ti ti-mail"></i> {{ $p->email }}</div>
                 @endif
             </div>
         </div>

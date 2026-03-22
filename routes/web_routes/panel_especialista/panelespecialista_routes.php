@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PanelEspecialista\PanelAuthController;
 use App\Http\Controllers\PanelEspecialista\AgendaController;
 use App\Http\Controllers\PanelEspecialista\AtencionController;
+use App\Http\Controllers\PanelEspecialista\PacienteController;
+use App\Http\Controllers\PanelEspecialista\PdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,5 +35,12 @@ Route::middleware(['auth:especialista'])
         Route::get('/atencion/{citaId}',  [AtencionController::class, 'show'])->name('atencion.show');
         Route::post('/atencion/{citaId}', [AtencionController::class, 'guardar'])->name('atencion.guardar');
         Route::delete('/atencion/foto/{id}', [AtencionController::class, 'eliminarFoto'])->name('atencion.foto.eliminar');
+
+        // Expediente del paciente (solo datos personales + casos propios)
+        Route::get('/paciente/{pacienteId}', [PacienteController::class, 'show'])->name('paciente.show');
+
+        // PDFs de consulta
+        Route::get('/paciente/{pacienteId}/consulta/{consultaId}/pdf',    [PdfController::class, 'consultaPdf'])->name('paciente.consulta.pdf');
+        Route::get('/paciente/{pacienteId}/consulta/{consultaId}/receta', [PdfController::class, 'recetaPdf'])->name('paciente.consulta.receta');
 
     });

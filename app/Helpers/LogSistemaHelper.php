@@ -118,11 +118,12 @@ class LogSistemaHelper
     // ── Valores legibles por campo ────────────────────────────────────────────
 
     private const VALORES_ESTATUS_CITA = [
-        'pendiente'  => 'Pendiente',
-        'confirmada' => 'Confirmada',
-        'atendida'   => 'Atendida',
-        'cancelada'  => 'Cancelada',
-        'no_asistio' => 'No asistió',
+        'pendiente'   => 'Pendiente',
+        'confirmada'  => 'Confirmada',
+        'en_consulta' => 'En Consulta',
+        'atendida'    => 'Atendida',
+        'cancelada'   => 'Cancelada',
+        'no_asistio'  => 'No asistió',
     ];
 
     private const VALORES_GENERO = [
@@ -366,12 +367,28 @@ class LogSistemaHelper
     /** Meta-datos comunes a todos los logs (IP, usuario, timestamp). */
     private static function _meta(): array
     {
-        $usuario = Auth::user();
+        $especialista = Auth::guard('especialista')->user();
+        $usuario      = Auth::user();
+
+        if ($especialista) {
+            // El panel del especialista tiene prioridad — es quien ejecutó la acción
+            $nombre    = trim(($especialista->nombre ?? '') . ' ' . ($especialista->apellido ?? ''));
+            $actor     = trim(($especialista->tratamiento ? $especialista->tratamiento . ' ' : '') . $nombre);
+            $actorTipo = 'especialista';
+        } elseif ($usuario) {
+            $actor     = trim(($usuario->nombre ?? '') . ' ' . ($usuario->apellido ?? '')) ?: 'sistema';
+            $actorTipo = 'usuario';
+        } else {
+            $actor     = 'sistema';
+            $actorTipo = 'sistema';
+        }
+
         return [
-            'ip'      => Request::ip(),
-            'fecha'   => now()->toDateString(),
-            'hora'    => now()->format('H:i:s'),
-            'usuario' => $usuario?->nombre ?? 'sistema',
+            'ip'         => Request::ip(),
+            'fecha'      => now()->toDateString(),
+            'hora'       => now()->format('H:i:s'),
+            'usuario'    => trim($actor) ?: 'sistema',
+            'actor_tipo' => $actorTipo,
         ];
     }
 
@@ -382,14 +399,15 @@ class LogSistemaHelper
      */
     private static function _persistir(string $modulo, int $id, string $accion, array $detalles): void
     {
-        $usuario    = Auth::user();
-        $sucursalId = $usuario?->sucursales->first()?->id ?? null;
-        $detalles   = array_merge(self::_meta(), $detalles);
+        $especialista = Auth::guard('especialista')->user();
+        $usuario      = $especialista ? null : Auth::user(); // Si es especialista, no usar el usuario admin
+        $sucursalId   = $usuario?->sucursales->first()?->id ?? null;
+        $detalles     = array_merge(self::_meta(), $detalles);
 
         match ($modulo) {
             'cita' => LogCita::create([
                 'cita_id'     => $id,
-                'usuario_id'  => $usuario?->id ?? 0,
+                'usuario_id'  => $usuario?->id ?? null,
                 'tipo_accion' => $accion,
                 'fecha'       => now(),
                 'sucursal_id' => $sucursalId,
@@ -398,7 +416,7 @@ class LogSistemaHelper
 
             'cliente' => LogCliente::create([
                 'cliente_id'  => $id,
-                'usuario_id'  => $usuario?->id ?? 0,
+                'usuario_id'  => $usuario?->id ?? null,
                 'tipo_accion' => $accion,
                 'fecha'       => now(),
                 'sucursal_id' => $sucursalId,
@@ -416,7 +434,7 @@ class LogSistemaHelper
 
             'empresa' => LogEmpresa::create([
                 'empresa_id'  => $id,
-                'usuario_id'  => $usuario?->id ?? 0,
+                'usuario_id'  => $usuario?->id ?? null,
                 'tipo_accion' => $accion,
                 'fecha'       => now(),
                 'sucursal_id' => $sucursalId,

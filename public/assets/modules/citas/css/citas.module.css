@@ -544,6 +544,24 @@
 }
 
 .sidebar-search:focus { border-color: var(--cita-primary); }
+.sidebar-search { padding-right: 30px; }
+
+.sidebar-search-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: .8rem;
+    line-height: 1;
+    border-radius: 4px;
+}
+.sidebar-search-clear:hover { color: #e53e3e; }
 
 /* Sección */
 .sidebar-section { margin-bottom: 22px; }
@@ -713,11 +731,12 @@
     text-transform: capitalize;
 }
 
-.badge-estatus--pendiente  { background: #f1f5f9; color: #64748b; }
-.badge-estatus--confirmada { background: #f0fff4; color: #276749; }
-.badge-estatus--atendida   { background: #edf2f7; color: #2d3748; }
-.badge-estatus--cancelada  { background: #fff5f5; color: #c53030; }
-.badge-estatus--no_asistio { background: #fffaf0; color: #c05621; }
+.badge-estatus--pendiente   { background: #f1f5f9; color: #64748b; }
+.badge-estatus--confirmada  { background: #f0fff4; color: #276749; }
+.badge-estatus--en_consulta { background: #2563eb; color: #ffffff; }
+.badge-estatus--atendida    { background: #edf2f7; color: #2d3748; }
+.badge-estatus--cancelada   { background: #fff5f5; color: #c53030; }
+.badge-estatus--no_asistio  { background: #fffaf0; color: #c05621; }
 
 /* ── Modal Ver — card estilo Bewe ────────────────────────── */
 .cita-ver-header {

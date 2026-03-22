@@ -93,4 +93,9 @@ class Cita extends Model
     {
         return $this->hasMany(LogCita::class, 'cita_id');
     }
+
+    public function consulta()
+    {
+        return $this->hasOne(Consulta::class, 'cita_id');
+    }
 }

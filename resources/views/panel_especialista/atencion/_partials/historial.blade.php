@@ -44,13 +44,13 @@
                                     @if($consulta->diagnostico)
                                         <div class="atc-consulta-field">
                                             <span class="atc-field-lbl">Diagnóstico:</span>
-                                            {{ $consulta->diagnostico }}
+                                            {!! $consulta->diagnostico !!}
                                         </div>
                                     @endif
                                     @if($consulta->tratamiento)
                                         <div class="atc-consulta-field">
                                             <span class="atc-field-lbl">Tratamiento:</span>
-                                            {{ $consulta->tratamiento }}
+                                            {!! $consulta->tratamiento !!}
                                         </div>
                                     @endif
                                     @if(!empty($consulta->zonas_afectadas))
@@ -77,8 +77,8 @@
                                     @if($consulta->adjuntos->count())
                                         <div class="atc-consulta-fotos">
                                             @foreach($consulta->adjuntos->where('tipo','imagen') as $adj)
-                                                <a href="{{ Storage::url($adj->ruta) }}" target="_blank" title="{{ $adj->descripcion }}">
-                                                    <img src="{{ Storage::url($adj->ruta) }}" alt="{{ $adj->descripcion }}">
+                                                <a href="{{ \Illuminate\Support\Facades\Storage::url($adj->ruta) }}" target="_blank" title="{{ $adj->descripcion }}">
+                                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($adj->ruta) }}" alt="{{ $adj->descripcion }}">
                                                 </a>
                                             @endforeach
                                         </div>

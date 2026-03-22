@@ -25,7 +25,7 @@ class AgendaController extends Controller
         $fechaSiguiente = $fechaCarbon->copy()->addDay()->toDateString();
         $esHoy        = $fecha === $hoy;
 
-        $citas = Cita::with(['paciente.persona', 'servicio', 'sucursal'])
+        $citas = Cita::with(['paciente.persona', 'servicio', 'sucursal', 'consulta'])
             ->where('especialista_id', $especialista->id)
             ->where('fecha', $fecha)
             ->whereNotIn('estatus', ['cancelada'])

@@ -53,6 +53,9 @@
     <script>
         const SUCURSALES_HORARIO = @json($sucursalHorario);
 
+        // Colores de estados configurados desde la empresa
+        window.COLORES_ESTATUS = @json(\App\Models\Empresa::first()?->colores_estatus ?? \App\Models\Empresa::COLORES_DEFAULT);
+
         CitasModule.init({
             csrf            : '{{ csrf_token() }}',
             eventosUrl      : '{{ route('citas.eventos') }}',

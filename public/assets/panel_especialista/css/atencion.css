@@ -232,8 +232,8 @@
 /* ── Selector Zonas Podológicas ──────────────────────────────── */
 .atc-zonas-container {
     display: flex;
-    gap: 2rem;
-    justify-content: center;
+    flex-direction: row;
+    gap: 1rem;
     flex-wrap: wrap;
     margin-bottom: .5rem;
 }
@@ -241,11 +241,9 @@
 .atc-pie-panel {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: .5rem;
     flex: 1;
-    min-width: 140px;
-    max-width: 200px;
+    min-width: 220px;
 }
 
 .atc-pie-titulo {
@@ -259,67 +257,89 @@
     letter-spacing: .05em;
 }
 
-/* ── SVG Foot diagram ────────────────────────────────────────── */
-.foot-svg {
+/* ── Imagen PNG del pie ──────────────────────────────────────── */
+.pie-img-wrapper {
+    position: relative;
+    display: block;
     width: 100%;
-    max-width: 180px;
+    line-height: 0;
+}
+
+.pie-img {
+    width: 100%;
     height: auto;
-    cursor: default;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.08));
+    display: block;
+    border-radius: 8px;
 }
 
-/* Foot outline background (non-interactive) */
-.foot-bg-outline {
-    fill: #f1f5f9;
-    stroke: #cbd5e0;
-    stroke-width: 1.5;
-    pointer-events: none;
-}
-
-/* ── Zonas clicables ─────────────────────────────────────────── */
-.zona-path {
-    fill: rgba(203, 213, 224, 0.55);
-    stroke: #94a3b8;
-    stroke-width: 1;
+/* ── Hotspot buttons ─────────────────────────────────────────── */
+.zona-hotspot {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.78);
+    border: 2.5px solid rgba(var(--primary), 0.65);
     cursor: pointer;
-    transition: fill .15s, stroke .15s;
+    transform: translate(-50%, -50%);
+    transition: background .15s, border-color .15s, box-shadow .15s, transform .15s;
+    padding: 0;
+    box-shadow: 0 1px 5px rgba(0,0,0,.2);
+    z-index: 2;
 }
 
-.zona-path:hover {
-    fill: rgba(var(--primary), .25);
-    stroke: rgba(var(--primary), .7);
+.zona-hotspot.hotspot-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
 }
 
-.zona-path.zona-activa {
-    fill: rgba(var(--primary), .55);
-    stroke: rgba(var(--primary), 1);
-    stroke-width: 1.5;
+.zona-hotspot:hover {
+    background: rgba(var(--primary), .2);
+    border-color: rgb(var(--primary));
+    transform: translate(-50%, -50%) scale(1.3);
+    box-shadow: 0 0 0 4px rgba(var(--primary), .18);
 }
 
-/* Uñas — distintas del cuerpo del dedo */
-.nail-zona {
-    fill: rgba(241, 245, 249, 0.9);
-    stroke: #94a3b8;
-    stroke-width: 1;
-}
-.nail-zona:hover {
-    fill: rgba(var(--primary), .2);
-    stroke: rgba(var(--primary), .7);
-}
-.nail-zona.zona-activa {
-    fill: rgba(var(--primary), .7);
-    stroke: rgba(var(--primary), 1);
+.zona-hotspot.activo {
+    background: rgb(var(--primary));
+    border-color: rgb(var(--primary));
+    box-shadow: 0 0 0 3px rgba(var(--primary), .3), 0 2px 6px rgba(0,0,0,.2);
 }
 
-/* Etiquetas del pie */
-.foot-label {
-    font-size: 7px;
-    fill: #94a3b8;
-    font-family: inherit;
+.zona-hotspot.activo::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: rgba(255,255,255,.4);
+    border-radius: 50%;
+}
+
+/* Tooltip personalizado */
+.zona-hotspot::before {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: .63rem;
+    font-weight: 600;
+    padding: .18rem .45rem;
+    background: rgba(15, 23, 42, .85);
+    color: #fff;
+    border-radius: 5px;
+    opacity: 0;
     pointer-events: none;
-    user-select: none;
+    transition: opacity .15s;
+    z-index: 10;
+    font-family: inherit;
+    line-height: 1.4;
 }
-.foot-label--sm { font-size: 6px; }
+
+.zona-hotspot:hover::before {
+    opacity: 1;
+}
 
 /* ── Chips de zonas seleccionadas ────────────────────────────── */
 .atc-zonas-chips {
@@ -437,3 +457,50 @@
     line-height: 1;
 }
 .atc-foto-remove:hover { background: #e53e3e; }
+
+/* ── Modo calibración de hotspots ────────────────────────────── */
+.btn-calibrar-trigger {
+    font-size: .72rem;
+    color: #94a3b8;
+    border-color: #e2e8f0;
+}
+
+.modo-calibracion .pie-img-wrapper {
+    outline: 2px dashed #f59e0b;
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.modo-calibracion .zona-hotspot {
+    cursor: grab !important;
+    border-style: dashed !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, .35) !important;
+}
+
+.modo-calibracion .zona-hotspot:active {
+    cursor: grabbing !important;
+}
+
+/* Badge de coordenadas flotante */
+.hotspot-coord-badge {
+    position: fixed;
+    background: rgba(15, 23, 42, .92);
+    color: #fbbf24;
+    font-size: .67rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    padding: .22rem .5rem;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 9999;
+    white-space: nowrap;
+    display: none;
+    letter-spacing: .02em;
+}
+
+/* Label de zona visible en calibración */
+.modo-calibracion .zona-hotspot::before {
+    opacity: 1 !important;
+    font-size: .58rem;
+    padding: .15rem .35rem;
+}
